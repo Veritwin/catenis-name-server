@@ -1,0 +1,7 @@
+/.idea/
+/bin/
+/log/
+/node_modules/
+/db/
+/*_key
+/*_key.pub

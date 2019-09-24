@@ -1,0 +1,42 @@
+// Default configuration file
+{
+  // Parameters pertaining to Logger module
+  logger: {
+    exitOnError: true,
+    objInspectionDepth: 4,
+    console: {
+      active: true,
+      logLevel: "INFO" // Valid options: ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL
+    },
+    file: {
+      active: true,
+      logLevel: "DEBUG", // Valid options: ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL
+      logDir: "log",
+      logFilename: "cns-%DATE%.log",
+      maxDays: 90
+    }
+  },
+  // Parameters pertaining to Application module
+  application: {
+    environment: "production",
+    domain: "catenis.io",
+    shutdownTimeout: 5000,  // (5 sec.) Timeout, in milliseconds, to wait before shutting down the application
+  },
+  // Parameters pertaining to NomeDB module
+  nameDB: {
+    dbDir: "db",
+    dbFilename: "cns-name.db",
+    autoSaveInterval: 15000,  // (15 sec.) Time interval, in milliseconds, for automatically saving the database
+  },
+  // Parameters pertaining to CtnNode module
+  ctnNode: {
+    dnsRecName: 'ctn-node',
+    idPrefix: 'ctn-node',
+    refreshInterval: 15000,  // (15 sec.) Time interval, in milliseconds, for refreshing list of Catenis nodes
+  },
+  // Parameters pertaining to RestApi module
+  restApi: {
+    port: 8188,
+    host: null
+  }
+}
