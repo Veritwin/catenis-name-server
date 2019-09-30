@@ -33,7 +33,7 @@ const cfgSettings = {
 export function Application() {
     this.dbRunning = false;
     this.restApiRunning = false;
-    this.shuttingDown = false;
+    this.runningState = Application.runningState.starting;
 
     // Set up handler to gracefully shutdown the application
     process.on('SIGTERM', processShutdown.bind(this));
@@ -45,9 +45,16 @@ export function Application() {
             },
             enumerable: true
         },
-        rootSubdomain: {
+        domainRoot: {
             get: function () {
                 return envSubdomainPrefix(this.environment) + cfgSettings.domain;
+            },
+            enumerable: true
+        },
+        ready: {
+            get: function () {
+                // noinspection JSPotentiallyInvalidUsageOfThis
+                return this.runningState === Application.runningState.ready;
             },
             enumerable: true
         }
@@ -114,19 +121,29 @@ function checkShutdownComplete() {
 }
 
 function startProcessing() {
+    CNS.logger.TRACE('Application started');
+    this.runningState = Application.runningState.started;
+
+    // Synchronize this CNS instance with all accessible remote CNS instances
+    CNS.cnsInstance.synchronize(() => {
+        this.runningState = Application.runningState.ready;
+        CNS.logger.INFO('Application ready');
+    });
 }
 
 function processShutdown() {
-    // Shutdown database
-    CNS.nameDB.shutdown();
+    this.runningState = Application.runningState.stopping;
 
     // Shutdown Rest API
     CNS.restApi.shutdown();
+
+    // Wait for some time to make sure that all processing is finalized gracefully
+    //  before shutting down the name Database
+    setTimeout(() => CNS.nameDB.shutdown(), cfgSettings.shutdownTimeout);
 }
 
 function finalizeShutdown() {
-    // Wait for some time to make sure that all processing is finalized gracefully
-    setTimeout(() => process.exit(0), cfgSettings.shutdownTimeout);
+    process.exit(0);
 }
 
 
@@ -141,7 +158,12 @@ Application.initialize = function () {
 // Application function class (public) properties
 //
 
-//Application.prop = {};
+Application.runningState = Object.freeze({
+    starting: 'starting',
+    started: 'started',
+    ready: 'ready',
+    stopping: 'stopping'
+});
 
 
 // Definition of module (private) functions

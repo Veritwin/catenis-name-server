@@ -87,7 +87,7 @@ NameDB.prototype.getNameEntry = function (name) {
     }
 };
 
-NameDB.prototype.setNameEntry = function (name, value) {
+NameDB.prototype.setNameEntry = function (name, value, lastUpdatedDate) {
     if (!this.dbReady) {
         throw new DbNotReadyError('NameDB not currently available');
     }
@@ -98,26 +98,34 @@ NameDB.prototype.setNameEntry = function (name, value) {
         this.collName.insert({
             name: name,
             value: value,
-            lastUpdatedDate: new Date()
+            lastUpdatedDate: (lastUpdatedDate instanceof Date) ? lastUpdatedDate : new Date()
         });
     }
     else {
         docName.value = value;
-        docName.lastUpdatedDate = new Date();
+        docName.lastUpdatedDate = (lastUpdatedDate instanceof Date) ? lastUpdatedDate : new Date();
 
         this.collName.update(docName);
     }
 };
 
-NameDB.prototype.getAllNameEntries = function () {
+NameDB.prototype.getAllNameEntries = function (updatedSince) {
     if (!this.dbReady) {
         throw new DbNotReadyError('NameDB not currently available');
     }
 
-    return this.collName.find().reduce((names, doc) => {
+    const selector = {};
+
+    if (updatedSince instanceof Date) {
+        selector.lastUpdatedDate = {
+            $gte: updatedSince
+        }
+    }
+
+    return this.collName.find(selector).reduce((names, doc) => {
         names[doc.name] = {
             value: doc.value,
-            lastUpdatedDate: doc.lastUpdatedDate
+            lastUpdatedDate: new Date(doc.lastUpdatedDate)
         };
 
         return names;

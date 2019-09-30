@@ -12,18 +12,21 @@
 // Third-party node modules
 import config from 'config';
 import restify from 'restify';
-import resError from 'restify-error';
+import resError from 'restify-errors';
+import httpSignature from 'http-signature';
 
 // References code in other (Catenis Name Server) modules
 import {CNS} from './CtnNameSrv';
 import {getIpfsRootRepoCid} from './ApiGetIpfsRootRepoCid';
 import {setIpfsRootRepoCid} from './ApiSetIpfsRootRepoCid';
+import {getAllIpfsRootRepoCids} from './ApiGetAllIpfsRootRepoCids';
+import {setMultiIpfsRootRepoCid} from './ApiSetMultiIpfsRootRepoCid';
 
 // Config entries
 const restApiConfig = config.get('restApi');
 
 // Configuration settings
-const cfgSettings = {
+export const cfgSettings = {
     port: restApiConfig.get('port'),
     host: restApiConfig.get('host')
 };
@@ -46,22 +49,30 @@ export function RestApi(port, host) {
     this.apiServer.use(restify.plugins.bodyParser({
         rejectUnknown: true
     }));
+    this.apiServer.use(restify.plugins.queryParser({mapParams: true}));
 
     this.apiServer.on('restifyError', errorHandler);
 
     // Define API methods
     this.apiServer.get('/ctn-node/:nodeIdx/ipfs-root', getIpfsRootRepoCid.bind(this));
     this.apiServer.post('/ctn-node/:nodeIdx/ipfs-root', setIpfsRootRepoCid.bind(this));
+    this.apiServer.get('/ctn-node/ipfs-root', getAllIpfsRootRepoCids.bind(this));
+    this.apiServer.post('/ctn-node/ipfs-root', setMultiIpfsRootRepoCid.bind(this));
 
     this.apiServer.listen(port, host, () => {
         CNS.logger.INFO('Catenis Name Server started at', this.apiServer.address());
         this.apiReady = true;
+        CNS.app.setRestApiStarted();
     });
 }
 
 
 // Public RestApi object methods
 //
+
+RestApi.prototype.canProcess = function () {
+    return this.apiReady && CNS.app.ready;
+};
 
 RestApi.prototype.shutdown = function () {
     if (this.apiReady) {
@@ -117,15 +128,21 @@ function authenticateRequest(req, res, next) {
         return next(new resError.UnauthorizedError('Unsupported authentication method'));
     }
 
-    // Try to lookup user (Catenis Node)
-    const ctnNodeInfo = CNS.ctnNode.getNodeInfoById(req.username);
+    // Try to lookup user
+    const userInfo = CNS.credentials.getUserInfoById(req.username);
 
-    if (!ctnNodeInfo) {
+    if (!userInfo) {
         CNS.logger.ERROR('Error authenticating request: username not found [%s]', req.username);
         return next(new resError.UnauthorizedError('Invalid user credentials'));
     }
 
-    req.ctnNodeInfo = ctnNodeInfo;
+    if (!httpSignature.verifySignature(req.authorization.signature, userInfo.pubKey)) {
+        CNS.logger.ERROR('Error authenticating request: failed to verify signature for user %s', req.username);
+        return next(new resError.UnauthorizedError('Invalid user credentials'));
+    }
+
+    req.userInfo = userInfo;
+
     return next();
 }
 

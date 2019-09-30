@@ -1,0 +1,14 @@
+// Config file with specific settings for development environment and CNS2 instance
+{
+  // Parameters pertaining to CnsInstance module
+  cnsInstance: {
+    self: {
+      pubKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAeYnMWVAZ+DxL7Owj8ODeG27yj/6queXrRcWnXdWj7qrmtIKwdCmQYAt8pID+1Ww0Drz3fCUJ4AHykehVFpsCPQ4JrfrMbn1ZHduZSC4OEpr9A5JrLEjCpgBBfblSLsH4nb9Y0s/QDRHBTtWPCvqLX7nCBkDNn02JkC6eYtkmElgPi19QC/LTmjU+BWSHZUR2PQxjDSm/dbULwY/L68Y0xmBFGoOMBpDoqhcx1LJ8usxlVsql8hgkRQjTTJhiMqOXAY3zwoeKeOcF950C45gQeMJNJmQvw0v/nXN7DbJW701YIGA/hNCX5uYL9WnefaKD7el8YbuHsPA25VPXWT3/'
+    },
+  },
+  // Parameters pertaining to RestApi module
+  restApi: {
+    port: 8288,
+    host: '127.0.0.1'
+  }
+}

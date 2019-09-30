@@ -1,0 +1,14 @@
+// Config file with specific settings for development environment and CNS3 instance
+{
+  // Parameters pertaining to CnsInstance module
+  cnsInstance: {
+    self: {
+      pubKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC4HDS9msv+NYnNHt+GXH/D4I8t1yJjwvOhZ/kDTOfSejWf5tUzG0NqcgenMc+hGn77U8tobcZKEnzAxjmfcKSOf6YEixisWpMOVTovnNo4eUePCPs7sX4wR5DLjMS2pz1SCimp6p9dACVTkrfpCkLmmx9pYzspdPym/ZspT83tpz3cHM5HfIH9K3ybAY+ik1Cl3VmnGkSWJAyVhV+6Tk1JtIIoL+uGhQ/dssLP9azbm7dxtS8XtnjLDzcpr5P8/GtNGu7ym/QdzTeiifFWn0+QHqmKpE3ajyw9vq9W+2ZPd8eNM1RQnU+dcT+adhHzLoul7FYQOfjI9LDWVJ9TberF'
+    },
+  },
+  // Parameters pertaining to RestApi module
+  restApi: {
+    port: 8388,
+    host: '127.0.0.1'
+  }
+}

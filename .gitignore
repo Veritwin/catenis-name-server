@@ -3,5 +3,6 @@
 /log/
 /node_modules/
 /db/
+/config/local*.json5
 /*_key
 /*_key.pub

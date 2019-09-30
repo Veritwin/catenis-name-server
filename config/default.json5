@@ -22,7 +22,7 @@
     domain: "catenis.io",
     shutdownTimeout: 5000,  // (5 sec.) Timeout, in milliseconds, to wait before shutting down the application
   },
-  // Parameters pertaining to NomeDB module
+  // Parameters pertaining to NameDB module
   nameDB: {
     dbDir: "db",
     dbFilename: "cns-name.db",
@@ -32,11 +32,36 @@
   ctnNode: {
     dnsRecName: 'ctn-node',
     idPrefix: 'ctn-node',
-    refreshInterval: 15000,  // (15 sec.) Time interval, in milliseconds, for refreshing list of Catenis nodes
+    refreshInterval: 300000,  // (5 min.) Time interval, in milliseconds, for refreshing list of Catenis nodes
+  },
+  // Parameters pertaining to CnsInstance module
+  cnsInstance: {
+    dnsRecName: 'cns',
+    idPrefix: 'cns',
+    self: {
+      privKey: '?????',
+      pubKey: ''
+    },
+    defaults: {
+      port: 8188,
+      secure: false
+    },
+    refreshInterval: 300000,  // (5 min.) Time interval, in milliseconds, for refreshing list of Catenis Name Server instances
   },
   // Parameters pertaining to RestApi module
   restApi: {
     port: 8188,
     host: null
+  },
+  // Parameters pertaining to CnsClient module
+  cnsClient: {
+    connectTimeout: 5000,  // (5 sec.) Time, in milliseconds, to wait for a socket
+    requestTimeout: 30000,  // (30 sec.) Time, in milliseconds, to wait for request to finish
+    hostFormat: "cns%d.%s",
+    headersToSign: [
+      "(request-target)",
+      "Date",
+      "Host"
+    ]
   }
 }

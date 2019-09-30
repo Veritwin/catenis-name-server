@@ -7,6 +7,27 @@ This is an implementation of the Catenis Name Service, which is used by Catenis 
 
 Catenis Name Service serves as a workaround for IPFS' IPNS, which currently does not meet Catenis' performance needs;
  it takes too long to publish a new name.
+ 
+## Building the application
+
+To build the application, issue the following commands:
+
+```shell
+nvm use
+npm i
+npm run build
+```
+
+## Starting the application
+
+To start the application, issue the following command:
+
+```shell
+env CNS_INSTANCE_IDX=<cns_index> node bin/main.js
+```
+
+> **Note**: the term `<cns_index>` above should be replaced with the index (starting from 1) of this Catenis Name Server
+ application instance. 
 
 ## How it works
 
@@ -48,11 +69,31 @@ Request: `POST /ctn-node/:nodeIdx/ipfs-root`
 URL parameters:
 - nodeIdx: the index of the Catenis node for which the IPFS root repository CID should be set
 
-Request body: a JSON containing the following keys:
+Request body: a JSON object containing the following keys:
 - `cid`: \[String\] New IPFS CID of Catenis node's IPFS root repository.
+- `lastUpdatedDate`: \[String\] ISO-8601 formatted date and time when CID for this Catenis node's IPFS root repository has last been recorded.
+
+> **Note**: the `lastUpdatedDate` key is only taken into account (and thus should only be sent) when another Catenis
+ Name Server instance is calling this method.
 
 Success response body: a JSON containing the following keys:
 - `status`: \[String\] The value **'success'**.
+
+### Set Multiple IPFS Root Repository CIDs method
+
+Request: `POST /ctn-node/ipfs-root`
+
+Request body: a JSON object containing one or more of the following keys:
+- `<Catenis_node_index>.cid`: \[String\] New IPFS CID of Catenis node's IPFS root repository.
+- `<Catenis_node_index>.lastUpdatedDate`: \[String\] ISO-8601 formatted date and time when CID for this Catenis node's IPFS root repository has last been recorded.
+
+> **Note**: the term `<Catenis_node_index>` should be replaced with the index of the Catenis node the IPFS root
+ repository CID of which should be set.
+ 
+Success response body: a JSON containing the following keys:
+- `status`: \[String\] The value **'success'**.
+
+> **Note**: this method should only be called by another Catenis Name Server instance.
 
 ### Retrieve IPFS Root Repository CID method
 
@@ -64,3 +105,17 @@ URL parameters:
 Success response body: a JSON containing the following keys:
 - `status`: \[String\] The value **'success'**.
 - `data.cid`: \[String\] The current IPFS CID of Catenis node's IPFS root repository.
+
+### Retrieve All IPFS Root Repository CIDs method
+
+Request: `GET /ctn-node/ipfs-root`
+
+Query string (optional) parameters:
+- `updatedSince`: \[String\] ISO-8601 formatted date and time used to filter Catenis IPFS root repository CIDs to be returned.
+
+Success response body: a JSON containing the following keys:
+- `status`: \[String\] The value **'success'**.
+- `data.<Catenis_node_index>.cid`: \[String\] CID of IPFS root repository for that Catenis node.
+- `data.<Catenis_node_index>.lastUpdatedDate`: \[String\] ISO-8601 formatted date and time when CID has been last updated.
+
+> **Note**: the term `<Catenis_node_index>` is replaced with the index of the specific Catenis node.

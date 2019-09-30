@@ -9,11 +9,14 @@
 //
 // Internal node modules
 import dns from 'dns';
+import util from 'util';
 // Third-party node modules
 import config from 'config';
+import Future from 'fibers/future';
 
 // References code in other (Catenis Name Server) modules
 import {CNS} from './CtnNameSrv';
+import {syncDnsResolveTxt} from './Util';
 
 // Config entries
 const ctnNodeConfig = config.get('ctnNode');
@@ -31,26 +34,19 @@ const cfgSettings = {
 
 // CtnNode function class
 export function CtnNode() {
-    this.ctnNodeIdInfo = undefined;
+    this.ctnNodeIdInfo = new Map();
 
     retrieveCatenisNodes.call(this);
 
-    setInterval(retrieveCatenisNodes.bind(this), cfgSettings.refreshInterval);
+    setInterval(intervalRetrieveCatenisNodes.bind(this), cfgSettings.refreshInterval);
 }
 
 
 // Public CtnNode object methods
 //
 
-/**
- * Get Catenis node info by Catenis node ID
- *
- * @param id {String} Catenis node ID in the form 'ctn-node<ctnNodeIdx>'
- * @returns {Object} Catenis node info: {idx:[Integer], pubKey:[String]}
- */
-CtnNode.prototype.getNodeInfoById = function (id) {
-    return this.ctnNodeIdInfo.get(id);
-};
+/*CtnNode.prototype.pub_func = function () {
+};*/
 
 
 // Module functions used to simulate private CtnNode object methods
@@ -59,34 +55,58 @@ CtnNode.prototype.getNodeInfoById = function (id) {
 //      or .bind().
 //
 
+function intervalRetrieveCatenisNodes() {
+    Future.task(retrieveCatenisNodes.bind(this)).detach();
+}
+
 function retrieveCatenisNodes() {
-    this.ctnNodeIdInfo = new Map();
+    CNS.logger.TRACE('Retrieving Catenis nodes...');
+    let records;
 
-    dns.resolveTxt(cfgSettings.dnsRecName + '.' + CNS.app.rootSubdomain, (err, records) => {
-        if (err) {
-            CNS.logger.ERROR('Error retrieving Catenis nodes.', err);
+    try {
+        records = syncDnsResolveTxt(cfgSettings.dnsRecName + '.' + CNS.app.domainRoot);
+    }
+    catch (err) {
+        CNS.logger.ERROR('Error retrieving Catenis nodes.', err);
+        return;
+    }
+
+    const newCtnNodeIdInfo = new Map();
+
+    records.forEach((chunks) => {
+        const record = chunks.reduce((rec, chunk) => {
+            return rec + chunk;
+        }, '');
+
+        // Try to parse it
+        let ctnNodeInfo;
+
+        try {
+            ctnNodeInfo = JSON.parse(record);
         }
-        else {
-            records.forEach((chunks) => {
-                const record = chunks.reduce((rec, chunk) => {
-                    return rec + chunk;
-                }, '');
+        catch (err2) {
+        }
 
-                // Try to parse it
-                let ctnNodeInfo;
-
-                try {
-                    ctnNodeInfo = JSON.parse(record);
-                }
-                catch (err2) {
-                }
-
-                if (isValidCtnNodeInfo(ctnNodeInfo)) {
-                    this.ctnNodeIdInfo.set(cfgSettings.idPrefix + ctnNodeInfo.idx, ctnNodeInfo);
-                }
-            });
+        if (isValidCtnNodeInfo(ctnNodeInfo)) {
+            newCtnNodeIdInfo.set(makeCtnNodeId(ctnNodeInfo.idx), ctnNodeInfo);
         }
     });
+
+    // Remove credentials of missing Catenis nodes
+    for (let ctnNodeId of this.ctnNodeIdInfo.keys()) {
+        if (!newCtnNodeIdInfo.has(ctnNodeId)) {
+            CNS.credentials.removeCatenisNode(ctnNodeId);
+        }
+    }
+
+    // Add credentials of new Catenis nodes
+    for (let [ctnNodeId, ctnNodeInfo] of newCtnNodeIdInfo) {
+        if (!this.ctnNodeIdInfo.has(ctnNodeId)) {
+            CNS.credentials.addCatenisNode(ctnNodeId, ctnNodeInfo);
+        }
+    }
+
+    this.ctnNodeIdInfo = newCtnNodeIdInfo;
 }
 
 
@@ -106,6 +126,30 @@ CtnNode.initialize = function () {
 
 // Definition of module (private) functions
 //
+
+export function makeCtnNodeId(idx) {
+    return cfgSettings.idPrefix + idx;
+}
+
+export function makeIpfsRootDbNameKey(id) {
+    return (typeof id === 'number' ? makeCtnNodeId(id) : id) + '.ipfs-root';
+}
+
+export function ctnNodeIdxFromId(id) {
+    const matchRes = id.match(new RegExp(util.format('^%s(\\d+)$', cfgSettings.idPrefix)));
+
+    if (matchRes) {
+        return parseInt(matchRes[1], 10);
+    }
+}
+
+export function ctnNodeIdFromIpfsRootDbNameKey(dbNameKey) {
+    const matchRes = dbNameKey.match(new RegExp(util.format('^(%s\\d+)\\.ipfs-root$', cfgSettings.idPrefix)));
+
+    if (matchRes) {
+        return matchRes[1];
+    }
+}
 
 function isValidCtnNodeInfo(info) {
     return typeof info === 'object' && info !== null && Number.isInteger(info.idx) && info.idx >= 0 && typeof info.pubKey === 'string';
