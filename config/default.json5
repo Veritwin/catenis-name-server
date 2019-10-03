@@ -2,7 +2,7 @@
 {
   // Parameters pertaining to Logger module
   logger: {
-    exitOnError: true,
+    exitOnError: false,
     objInspectionDepth: 4,
     console: {
       active: true,
@@ -36,6 +36,8 @@
     environment: "production",
     domain: "catenis.io",
     shutdownTimeout: 5000,  // (5 sec.) Timeout, in milliseconds, to wait before shutting down the application
+    shutdownWithErrorTimeout: 10000,  // (10 sec.) Timeout, in milliseconds, to wait before shutting down the application after an uncaught exception
+                                      //  Note: this value should be substantially greater than the `shutdownTimeout` property
   },
   // Parameters pertaining to NameDB module
   nameDB: {

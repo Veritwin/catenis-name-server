@@ -22,7 +22,8 @@ const appConfig = config.get('application');
 const cfgSettings = {
     environment: appConfig.get('environment'),
     domain: appConfig.get('domain'),
-    shutdownTimeout: appConfig.get('shutdownTimeout')
+    shutdownTimeout: appConfig.get('shutdownTimeout'),
+    shutdownWithErrorTimeout: appConfig.get('shutdownWithErrorTimeout')
 };
 
 
@@ -34,9 +35,12 @@ export function Application() {
     this.dbRunning = false;
     this.restApiRunning = false;
     this.runningState = Application.runningState.starting;
+    this.fatalError = false;
 
     // Set up handler to gracefully shutdown the application
     process.on('SIGTERM', processShutdown.bind(this));
+
+    process.on('uncaughtException', shutdownWithError.bind(this));
 
     Object.defineProperties(this,{
         environment: {
@@ -134,16 +138,35 @@ function startProcessing() {
 function processShutdown() {
     this.runningState = Application.runningState.stopping;
 
-    // Shutdown Rest API
-    CNS.restApi.shutdown();
+    if (CNS.restApi) {
+        // Shutdown Rest API
+        CNS.restApi.shutdown();
 
-    // Wait for some time to make sure that all processing is finalized gracefully
-    //  before shutting down the name Database
-    setTimeout(() => CNS.nameDB.shutdown(), cfgSettings.shutdownTimeout);
+        // Wait for some time to make sure that all processing is finalized gracefully
+        //  before shutting down the name Database
+        setTimeout(() => CNS.nameDB.shutdown(), cfgSettings.shutdownTimeout);
+    }
+    else if (CNS.nameDB) {
+        CNS.nameDB.shutdown()
+    }
 }
 
 function finalizeShutdown() {
-    process.exit(0);
+    if (!this.fatalError) {
+        process.exit(0);
+    }
+}
+
+function shutdownWithError(err) {
+    // A fatal error (uncaught exception) has occurred. Try to shutdown gracefully
+    //  forcing application to exit after a while
+    this.fatalError = true;
+
+    setTimeout(() => {
+        process.exit(-2)
+    }, cfgSettings.shutdownWithErrorTimeout);
+
+    processShutdown.call(this);
 }
 
 
