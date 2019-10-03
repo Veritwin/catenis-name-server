@@ -14,7 +14,22 @@
       logDir: "log",
       logFilename: "cns-%DATE%.log",
       maxDays: 90
+    },
+    email: {
+      active: true,
+      logLevel: "WARN", // Valid options: ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL
+      toAddresses: "andre@blockchainofthings.com", // Can be set to a comma separated list of e-mail addresses
+      fromAddress: "Catenis Name Server <noreply@blockchainofthings.com>",
+      subjectFormat: "{{level}} [CNS%d] - {{msg}}"
     }
+  },
+  // Parameters pertaining to e-mail server configuration
+  "email": {
+    "smtpHost": "localhost",
+    "secureProto": null,  // (optional, can be set to null) Secure protocol that should be used with SMTP server. Valid options: 'ssl' or 'tls'
+    "smtpPort": null,  // (optional, can be set to null) To be set only if different than default (depending on secureProto): none/null (25), ssl (465), tls (587)
+    "username": null,  // (optional, can be set to null) To be set only if required by SMTP host
+    "password": null   // (optional, can be set to null) To be set only if required by SMTP host
   },
   // Parameters pertaining to Application module
   application: {

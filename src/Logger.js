@@ -11,10 +11,12 @@ import fs from 'fs';
 import config from 'config';
 import winston from 'winston';
 import 'winston-daily-rotate-file';
+import 'winston-mail';
 import { LEVEL } from 'triple-beam';
 
 // References code in other (Catenis Name Server) modules
 import { CNS } from './CtnNameSrv';
+import { cfgSettings as emailCfgSettings } from './ConfigEmail';
 
 // Config entries
 const loggerConfig = config.get('logger');
@@ -33,6 +35,13 @@ const cfgSettings = {
         logDir: loggerConfig.get('file.logDir'),
         logFilename: loggerConfig.get('file.logFilename'),
         maxDays: loggerConfig.get('file.maxDays')
+    },
+    email: {
+        active: loggerConfig.get('email.active'),
+        logLevel: loggerConfig.get('email.logLevel'),
+        toAddresses: loggerConfig.get('email.toAddresses'),
+        fromAddress: loggerConfig.get('email.fromAddress'),
+        subjectFormat: loggerConfig.get('email.subjectFormat')
     }
 };
 
@@ -93,8 +102,10 @@ export function Logger() {
         level: 'INFO',
         exitOnError: cfgSettings.exitOnError,
         transports: [
+            this.logTransport.internEmail,
             this.logTransport.console,
-            this.logTransport.dailyRotateFile
+            this.logTransport.dailyRotateFile,
+            this.logTransport.email
         ]
     });
 
@@ -166,6 +177,37 @@ function setUpTransports() {
                 mergeMetaArguments({colors: false}),
                 winston.format.printf(formatLogMessage)
             )
+        },
+        email: {
+            level: validLogLevel(cfgSettings.email.logLevel, 'WARN'),
+            silent: !cfgSettings.email.active,
+            host: emailCfgSettings.smtpHost,
+            to: cfgSettings.email.toAddresses,
+            from: cfgSettings.email.fromAddress,
+            subject: util.format(cfgSettings.email.subjectFormat, global.CNS_INSTANCE_IDX),
+            html: false,
+            handleExceptions: true,
+            exceptionsLevel: 'FATAL',
+            humanReadableUnhandledException: true,
+            format: winston.format.combine(
+                mergeMetaArguments({colors: false})
+            )
+        },
+        // Special transport used to send e-mail notification messages with internal logger error
+        internEmail: {
+            name: 'intern_mail',
+            level: 'INTERN',
+            unique: true,
+            silent: !cfgSettings.email.active,
+            host: emailCfgSettings.smtpHost,
+            to: cfgSettings.email.toAddresses,
+            from: cfgSettings.email.fromAddress,
+            subject: util.format(cfgSettings.email.subjectFormat, global.CNS_INSTANCE_IDX),
+            html: false,
+            handleExceptions: false,
+            format: winston.format.combine(
+                mergeMetaArguments({colors: false})
+            )
         }
     };
 
@@ -186,11 +228,43 @@ function setUpTransports() {
         }
     }
 
+    // Complement options for e-mail logging transports
+    if (emailCfgSettings.secureProto) {
+        if (emailCfgSettings.secureProto === 'ssl') {
+            transportOptions.email.ssl = true;
+            transportOptions.internEmail.ssl = true;
+        }
+        else if (emailCfgSettings.secureProto === 'tls') {
+            transportOptions.email.tls = true;
+            transportOptions.internEmail.tls = true;
+        }
+    }
+
+    if (emailCfgSettings.smtpPort && typeof emailCfgSettings.smtpPort === 'number') {
+        transportOptions.email.port = emailCfgSettings.smtpPort;
+        transportOptions.internEmail.port = emailCfgSettings.smtpPort;
+    }
+
+    if (emailCfgSettings.username) {
+        transportOptions.email.username = emailCfgSettings.username;
+        transportOptions.internEmail.username = emailCfgSettings.username;
+    }
+
+    if (emailCfgSettings.password) {
+        transportOptions.email.password = emailCfgSettings.password;
+        transportOptions.internEmail.password = emailCfgSettings.password;
+    }
+
     // Instantiate logging transports
     this.logTransport = {
         console: new winston.transports.Console(transportOptions.console),
-        dailyRotateFile: new winston.transports.DailyRotateFile(transportOptions.dailyRotateFile)
+        dailyRotateFile: new winston.transports.DailyRotateFile(transportOptions.dailyRotateFile),
+        email: new winston.transports.Mail(transportOptions.email),
+        internEmail: new winston.transports.Mail(transportOptions.internEmail)
     };
+
+    // Set up logging transport specific event handlers
+    this.logTransport.internEmail.on('error', internMailErrorHandler);
 }
 
 
@@ -217,7 +291,8 @@ Logger.logSeverity = Object.freeze({
         INFO: 300,
         DEBUG: 400,
         TRACE: 500,
-        ALL: 9998
+        ALL: 9998,
+        INTERN: 9999    // Special level used exclusively to send e-mail notification messages with internal logger error
     }),
     colors: Object.freeze({
         FATAL: 'magenta',
@@ -227,7 +302,8 @@ Logger.logSeverity = Object.freeze({
         INFO: 'blue',
         DEBUG: 'green',
         TRACE: 'gray',
-        ALL: 'gray'
+        ALL: 'gray',
+        INTERN: 'magenta'
     })
 });
 
@@ -263,12 +339,57 @@ function formatLogMessage(info) {
     return `${prefix}${info.level}:${padding} ${info.message}`;
 }
 
-function loggerErrorHandler(error, transport) {
-    let errMsg = transport ? util.format('Error sending log message via \'%s\' transport.', transport.name)
-            : 'Logger error.';
+function internMailErrorHandler(error) {
+    console.error(util.format('%s - ****** Error sending internal logger error message via e-mail.', new Date().toISOString()), error);
+}
 
-    // Log error to console
-    console.error(util.format('%s - ****** %s', new Date().toISOString(), errMsg), error);
+function loggerErrorHandler(error, transport) {
+    if (transport && transport.name === 'mail') {
+        // Error while trying to send log message via e-mail.
+        //  Log error message via all other transports (except internal e-mail)
+        const errMsg = 'Error sending log message via e-mail.';
+
+        Object.keys(this._logger.transports).forEach((key) => {
+            const logTransport = this._logger.transports[key];
+
+            if (logTransport.name !== 'mail' && logTransport.name !== 'intern_mail') {
+                this._log(logTransport, 'ERROR', errMsg, error);
+            }
+        });
+    }
+    else {
+        // Any other error
+        let errMsg;
+
+        if (transport) {
+            // Make sure that we do not handle internal e-mail error, since it has its own error handler
+            if (transport.name !== 'intern_mail') {
+                // Error while sending log message via a given transport (except internal e-mail)
+                errMsg = util.format('Error sending log message via \'%s\' transport.', transport.name);
+
+                // Try to send error message via e-mail
+                Object.keys(this._logger.transports).some((key) => {
+                    const logTransport = this._logger.transports[key];
+
+                    if (logTransport.name === 'intern_mail') {
+                        this._log(logTransport, 'INTERN', errMsg, error);
+
+                        return true;
+                    }
+
+                    return false;
+                });
+            }
+        }
+        else {
+            errMsg = 'Logger error.';
+        }
+
+        if (errMsg) {
+            // Log error to console
+            console.error(util.format('%s - ****** %s', new Date().toISOString(), errMsg), error);
+        }
+    }
 }
 
 
