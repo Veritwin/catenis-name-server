@@ -23,10 +23,13 @@ npm run build
 To start the application, issue the following command:
 
 ```shell
-env CNS_INSTANCE_IDX=<cns_index> node bin/main.js
+env NODE_CONFIG_ENV='<environment>' CNS_INSTANCE_IDX=<cns_index> node build/main.js
 ```
 
-> **Note**: the term `<cns_index>` above should be replaced with the index (starting from 1) of this Catenis Name Server
+> **Note 1**: the term `<environment>` should be replaced with the appropriate deployment environment; either
+ 'development' (the default, if not set), 'sandbox' or 'production'.
+
+> **Note 2**: the term `<cns_index>` above should be replaced with the index (starting from 1) of this Catenis Name Server
  application instance. 
 
 ## How it works

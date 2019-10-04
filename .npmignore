@@ -1,0 +1,9 @@
+/.idea/
+/dist/
+/log/
+/db/
+/*_key
+/*_key.pub
+/src/
+/*.tgz
+/config/*development*.json5

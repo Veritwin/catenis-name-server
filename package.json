@@ -2,10 +2,16 @@
   "name": "catenis-name-server",
   "version": "1.0.0",
   "description": "Implementation of Catenis Name Service",
-  "main": "bin/main.js",
+  "main": "build/main.js",
   "scripts": {
-    "cleanup": "rm -r bin/*",
-    "build": "npm run cleanup && babel src -d bin",
+    "cleanup-build": "rm -rf build/*",
+    "cleanup-dist": "rm -f dist/$npm_package_name-$npm_package_version.tgz",
+    "cleanup-dist-dev": "rm -f dist/dev/$npm_package_name-$npm_package_version.tgz",
+    "cleanup": "npm run cleanup-build && npm run cleanup-dist",
+    "cleanup-dev": "npm run cleanup-build && npm run cleanup-dist-dev",
+    "build": "npm run cleanup-build && babel src -d build",
+    "predeploy": "npm run cleanup && npm run build && npm pack && mv *.tgz dist/",
+    "predeploy-dev": "bin/npmignore_dev.sh && npm run cleanup-dev && npm run build && npm pack && mv *.tgz dist/dev && bin/npmignore_dev.sh reset",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -15,7 +21,7 @@
   "author": "Cláudio de Castro",
   "license": "MIT",
   "bin": {
-    "ctnnamesrv": "./bin/main.js"
+    "ctnnamesrv": "./build/main.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.0",
