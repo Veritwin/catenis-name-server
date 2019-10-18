@@ -60,8 +60,9 @@ export function setMultiIpfsRootRepoCid(req, res, next) {
             return next(new resError.BadRequestError('Missing or invalid body parameters'));
         }
 
-        Object.keys(req.body).forEach((nodeIdx) => {
-            const nodeEntry = req.body[nodeIdx];
+        Object.keys(req.body).forEach((key) => {
+            const nodeEntry = req.body[key];
+            const nodeIdx = parseInt(key);
             const ipfsRootDbNameKey = makeIpfsRootDbNameKey(nodeIdx);
             const nameEntry = CNS.nameDB.getNameEntry(ipfsRootDbNameKey);
 

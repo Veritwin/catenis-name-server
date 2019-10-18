@@ -94,21 +94,22 @@ CnsInstance.prototype.synchronize = function (callback) {
                             CNS.logger.ERROR('Error retrieving all Catenis node IPFS repo root CIDs from remote CNS instance [%s].', cnsInstanceId, err);
                         }
                         else if (result.data) {
-                            Object.keys(result.data).forEach((nodeIdx) => {
-                                const ctnNodeEntry = result.data[nodeIdx];
-                                ctnNodeEntry.mtLastUpdatedDate = moment(ctnNodeEntry.lastUpdatedDate);
+                            Object.keys(result.data).forEach((key) => {
+                                const nodeEntry = result.data[key];
+                                nodeEntry.mtLastUpdatedDate = moment(nodeEntry.lastUpdatedDate);
+                                const nodeIdx = parseInt(key);
                                 const ipfsRootDbNameKey = makeIpfsRootDbNameKey(nodeIdx);
                                 const nameEntry = CNS.nameDB.getNameEntry(ipfsRootDbNameKey);
 
-                                if (nameEntry && !ctnNodeEntry.mtLastUpdatedDate.isAfter(nameEntry.lastUpdatedDate)) {
+                                if (nameEntry && !nodeEntry.mtLastUpdatedDate.isAfter(nameEntry.lastUpdatedDate)) {
                                     CNS.logger.DEBUG('CnsInstance.synchronize: received CID is not newer than current CID value for the designated name and shall not be updated', {
                                         currentNameEntry: nameEntry,
                                         nodeIdx: nodeIdx,
-                                        nodeEntry: ctnNodeEntry
+                                        nodeEntry: nodeEntry
                                     });
                                 }
                                 else {
-                                    CNS.nameDB.setNameEntry(ipfsRootDbNameKey, ctnNodeEntry.cid, ctnNodeEntry.mtLastUpdatedDate.toDate());
+                                    CNS.nameDB.setNameEntry(ipfsRootDbNameKey, nodeEntry.cid, nodeEntry.mtLastUpdatedDate.toDate());
                                 }
                             });
                         }

@@ -131,8 +131,8 @@ export function makeCtnNodeId(idx) {
     return cfgSettings.idPrefix + idx;
 }
 
-export function makeIpfsRootDbNameKey(id) {
-    return (typeof id === 'number' ? makeCtnNodeId(id) : id) + '.ipfs-root';
+export function makeIpfsRootDbNameKey(idx) {
+    return makeCtnNodeId(idx) + '.ipfs-root';
 }
 
 export function ctnNodeIdxFromId(id) {
