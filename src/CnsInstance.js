@@ -86,12 +86,12 @@ CnsInstance.prototype.synchronize = function (callback) {
     CNS.logger.TRACE('Synchronizing with other CNS instances');
     if (this.hasRemoteCNSInstances()) {
         async.series([
-            // Retrieve all Catenis node IPFS root repo CIDs from remote CNS instances
+            // Retrieve all Catenis node IPFS repo root CIDs from remote CNS instances
             (cb) => {
                 async.each(this.remoteCnsConnection, ([cnsInstanceId, cnsClient], cb2) => {
                     cnsClient.getAllIpfsRootRepoCids((err, result) => {
                         if (err) {
-                            CNS.logger.ERROR('Error retrieving all Catenis node IPFS root repo CIDs from remote CNS instance [%s].', cnsInstanceId, err);
+                            CNS.logger.ERROR('Error retrieving all Catenis node IPFS repo root CIDs from remote CNS instance [%s].', cnsInstanceId, err);
                         }
                         else if (result.data) {
                             Object.keys(result.data).forEach((nodeIdx) => {
@@ -119,7 +119,7 @@ CnsInstance.prototype.synchronize = function (callback) {
                     cb();
                 });
             },
-            // Send all locally recorded Catenis node IPFS root repo CIDs to remote CNS instances
+            // Send all locally recorded Catenis node IPFS repo root CIDs to remote CNS instances
             (cb) => {
                 const ctnNodeEntries = {};
                 const nameEntries =  CNS.nameDB.getAllNameEntries();
@@ -138,7 +138,7 @@ CnsInstance.prototype.synchronize = function (callback) {
                 async.each(this.remoteCnsConnection, ([cnsInstanceId, cnsClient], cb2) => {
                     cnsClient.setMultiIpfsRootRepoCid(ctnNodeEntries, (err) => {
                         if (err) {
-                            CNS.logger.ERROR('Error sending all locally recorded Catenis node IPFS root repo CIDs to remote CNS instance [%s].', cnsInstanceId, err);
+                            CNS.logger.ERROR('Error sending all locally recorded Catenis node IPFS repo root CIDs to remote CNS instance [%s].', cnsInstanceId, err);
                         }
                         cb2();
                     });

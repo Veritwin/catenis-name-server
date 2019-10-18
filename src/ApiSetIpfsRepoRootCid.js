@@ -29,8 +29,8 @@ import {Credentials} from './Credentials';
 //    nodeIdx [String] - Catenis node index
 //
 //  JSON payload: {
-//    "cid": [String],  - Catenis node IPFS root repository CID
-//    "lastUpdatedDate": [String]  - (optional) ISO-8601 formatted date and time when CID for this Catenis node's IPFS root repository has last been recorded
+//    "cid": [String],  - Catenis node IPFS repository root CID
+//    "lastUpdatedDate": [String]  - (optional) ISO-8601 formatted date and time when CID for this Catenis node's IPFS repository root has last been recorded
 //  }
 //
 //  Success data returned: {
@@ -68,7 +68,7 @@ export function setIpfsRootRepoCid(req, res, next) {
             return next(new resError.BadRequestError('Missing or invalid body parameter'));
         }
 
-        // Make sure that user is trying to update its own IPFS root repository CID
+        // Make sure that user is trying to update its own IPFS repository root CID
         if (req.userInfo.role === Credentials.roles.ctnNode && req.username !== makeCtnNodeId(req.params.nodeIdx)) {
             return next(new resError.UnauthorizedError('User not allowed to update resource'));
         }
@@ -98,7 +98,7 @@ export function setIpfsRootRepoCid(req, res, next) {
                 async.each(CNS.cnsInstance.remoteCnsConnection, ([cnsInstanceId, cnsClient], cb) => {
                     cnsClient.setIpfsRootRepoCid(req.params.nodeIdx, nameEntry.value, nameEntry.lastUpdatedDate, (err) => {
                         if (err) {
-                            CNS.logger.ERROR('Error broadcasting newly set Catenis node IPFS root repo CID to remote CNS instance [%s].', cnsInstanceId, err);
+                            CNS.logger.ERROR('Error broadcasting newly set Catenis node IPFS repo root CID to remote CNS instance [%s].', cnsInstanceId, err);
                         }
                         cb();
                     });

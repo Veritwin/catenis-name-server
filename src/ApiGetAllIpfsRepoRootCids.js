@@ -26,14 +26,14 @@ import {
 // Method used to process GET '/ctn-node/ipfs-root?updatedSince=<date>' endpoint of Rest API
 //
 //  Query string (optional) parameters:
-//    updatedSince [String]  - ISO-8601 formatted date and time used to filter Catenis IPFS root repository CIDs to be returned.
+//    updatedSince [String]  - ISO-8601 formatted date and time used to filter Catenis IPFS repository root CIDs to be returned.
 //                              Only CIDs that have been last updated on this date or later should be returned
 //
 //  Success data returned: {
 //    "status": "success",
 //    "data": {  - (optional)
 //      "<Catenis_node_index>": {
-//        "cid": [String] - CID of IPFS root repository for that Catenis node
+//        "cid": [String] - CID of IPFS repository root for that Catenis node
 //        "lastUpdatedDate": [String] - ISO-8601 formatted date and time when CID has been last updated
 //      },
 //      ...

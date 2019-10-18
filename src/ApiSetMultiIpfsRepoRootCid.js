@@ -27,8 +27,8 @@ import {strictParseInt} from './Util';
 //
 //  JSON payload: {
 //    "<Catenis_node_index>": {
-//      "cid": [String],  - Catenis node IPFS root repository CID
-//      "lastUpdatedDate": [String]  - (optional) ISO-8601 formatted date and time when CID for this Catenis node's IPFS root repository has last been recorded
+//      "cid": [String],  - Catenis node IPFS repository root CID
+//      "lastUpdatedDate": [String]  - (optional) ISO-8601 formatted date and time when CID for this Catenis node's IPFS repository root has last been recorded
 //    },
 //    ...
 //  }

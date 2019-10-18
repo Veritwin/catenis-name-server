@@ -29,7 +29,7 @@ import {strictParseInt} from './Util';
 //  Success data returned: {
 //    "status": "success",
 //    "data": {  - (optional)
-//      "cid": [String] - CID of IPFS root repository for that Catenis node
+//      "cid": [String] - CID of IPFS repository root for that Catenis node
 //      "lastUpdatedDate": [String] - ISO-8601 formatted date and time when CID has been last updated
 //    }
 //  }
