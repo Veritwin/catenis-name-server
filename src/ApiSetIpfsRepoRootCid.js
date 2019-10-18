@@ -16,7 +16,7 @@ import async from 'async';
 
 // References code in other (Catenis Name Server) modules
 import {CNS} from './CtnNameSrv';
-import {checkRequestParams} from './ApiGetIpfsRootRepoCid';
+import {checkRequestParams} from './ApiGetIpfsRepoRootCid';
 import { makeIpfsRootDbNameKey, makeCtnNodeId } from './CtnNode';
 import {Credentials} from './Credentials';
 
