@@ -19,7 +19,7 @@
     "Catenis Name Service"
   ],
   "author": "Cláudio de Castro",
-  "license": "MIT",
+  "private": true,
   "bin": {
     "ctnnamesrv": "./build/main.js"
   },

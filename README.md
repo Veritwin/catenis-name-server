@@ -122,3 +122,9 @@ Success response body: a JSON containing the following keys:
 - `data.<Catenis_node_index>.lastUpdatedDate`: \[String\] ISO-8601 formatted date and time when CID has been last updated.
 
 > **Note**: the term `<Catenis_node_index>` is replaced with the index of the specific Catenis node.
+
+## License
+
+This project is for Blockchain of Things' internal use only.
+
+Copyright © 2019, Blockchain of Things Inc.
