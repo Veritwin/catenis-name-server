@@ -14,6 +14,7 @@ import util from 'util';
 
 // References code in other (Catenis Name Server) modules
 import {strictParseInt} from './Util';
+import {fixIt as fixMoment} from './FixMoment';
 
 
 // Definition of module (private) functions
@@ -28,6 +29,9 @@ function checkCNSInstanceIdx(val) {
 
 // Module code
 //
+
+// Fix moment class so the proper string is returned when inspecting moment objects on Node.js >= 12.0.0
+fixMoment();
 
 // Set Catenis Name Server index for this instance
 if (!process.env.CNS_INSTANCE_IDX) {
