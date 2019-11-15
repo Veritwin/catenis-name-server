@@ -63,7 +63,7 @@ export function setIpfsRootRepoCid(req, res, next) {
         let mtLastUpdatedDate;
 
         if (req.userInfo.role === Credentials.roles.cnsInstance && !(typeof req.body.lastUpdatedDate === 'string'
-            && (mtLastUpdatedDate = moment(req.body.lastUpdatedDate, moment.ISO_8601, true)).isValid())) {
+                && (mtLastUpdatedDate = moment(req.body.lastUpdatedDate, moment.ISO_8601, true)).isValid())) {
             CNS.logger.DEBUG('setIpfsRootRepoCid: invalid `lastUpdatedDate` body parameter [%s]', req.body.lastUpdatedDate);
             return next(new resError.BadRequestError('Missing or invalid body parameter'));
         }
