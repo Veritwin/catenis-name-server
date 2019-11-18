@@ -12,7 +12,7 @@
 // Third-party node modules
 
 // References code in other (Catenis Name Server) modules
-import {CNS} from './CtnNameSrv';
+import {CNS} from './CtnNameSvr';
 
 
 // Definition of function classes

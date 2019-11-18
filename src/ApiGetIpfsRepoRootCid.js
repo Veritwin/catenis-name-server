@@ -13,7 +13,7 @@
 import resError from 'restify-errors';
 
 // References code in other (Catenis Name Server) modules
-import {CNS} from './CtnNameSrv';
+import {CNS} from './CtnNameSvr';
 import {makeIpfsRootDbNameKey} from './CtnNode';
 import {strictParseInt} from './Util';
 

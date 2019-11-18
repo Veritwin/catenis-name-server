@@ -16,7 +16,7 @@ import config from 'config';
 import Loki from 'lokijs';
 
 // References code in other (Catenis Name Server) modules
-import {CNS} from './CtnNameSrv';
+import {CNS} from './CtnNameSvr';
 import {
     DbNotReadyError
 } from './CustomErrors';

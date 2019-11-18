@@ -21,7 +21,7 @@
   "author": "Cláudio de Castro",
   "private": true,
   "bin": {
-    "ctnnamesrv": "./build/main.js"
+    "ctnnamesvr": "./build/main.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.0",

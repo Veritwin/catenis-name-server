@@ -14,7 +14,7 @@ import resError from 'restify-errors';
 import moment from 'moment';
 
 // References code in other (Catenis Name Server) modules
-import {CNS} from './CtnNameSrv';
+import {CNS} from './CtnNameSvr';
 import { makeIpfsRootDbNameKey, makeCtnNodeId } from './CtnNode';
 import {Credentials} from './Credentials';
 import {strictParseInt} from './Util';

@@ -16,7 +16,7 @@ import httpSignature from 'http-signature';
 import Future from 'fibers/future';
 
 // References code in other (Catenis Name Server) modules
-import {CNS} from './CtnNameSrv';
+import {CNS} from './CtnNameSvr';
 
 // Config entries
 const cnsClientConfig = config.get('cnsClient');

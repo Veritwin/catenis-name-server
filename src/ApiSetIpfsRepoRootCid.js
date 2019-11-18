@@ -15,7 +15,7 @@ import moment from 'moment';
 import async from 'async';
 
 // References code in other (Catenis Name Server) modules
-import {CNS} from './CtnNameSrv';
+import {CNS} from './CtnNameSvr';
 import {checkRequestParams} from './ApiGetIpfsRepoRootCid';
 import { makeIpfsRootDbNameKey, makeCtnNodeId } from './CtnNode';
 import {Credentials} from './Credentials';

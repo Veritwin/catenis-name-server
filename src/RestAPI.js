@@ -16,7 +16,7 @@ import resError from 'restify-errors';
 import httpSignature from 'http-signature';
 
 // References code in other (Catenis Name Server) modules
-import {CNS} from './CtnNameSrv';
+import {CNS} from './CtnNameSvr';
 import {getIpfsRootRepoCid} from './ApiGetIpfsRepoRootCid';
 import {setIpfsRootRepoCid} from './ApiSetIpfsRepoRootCid';
 import {getAllIpfsRootRepoCids} from './ApiGetAllIpfsRepoRootCids';
