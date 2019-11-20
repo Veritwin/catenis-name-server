@@ -5,5 +5,5 @@
 // Module variables
 //
 
-// Variable used to reference all Catenis 'global' objects
+// Variable used to reference all Catenis Name Server 'global' objects
 export const CNS = {};
