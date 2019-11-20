@@ -37,7 +37,7 @@ import {Credentials} from './Credentials';
 //    "status": "success"
 //  }
 //
-export function setIpfsRootRepoCid(req, res, next) {
+export function setIpfsRepoRootCid(req, res, next) {
     try {
         if (!this.canProcess()) {
             return next(new resError.ServiceUnavailableError('Service unavailable'));
@@ -47,7 +47,7 @@ export function setIpfsRootRepoCid(req, res, next) {
             return next(new resError.UnsupportedMediaTypeError('Unsupported media type'))
         }
 
-        if (!checkRequestParams(req, 'setIpfsRootRepoCid')) {
+        if (!checkRequestParams(req, 'setIpfsRepoRootCid')) {
             return next(new resError.BadRequestError('Missing or invalid request parameters'));
         }
 
@@ -56,7 +56,7 @@ export function setIpfsRootRepoCid(req, res, next) {
         }
 
         if (typeof req.body.cid !== 'string') {
-            CNS.logger.DEBUG('setIpfsRootRepoCid: invalid `cid` body parameter [%s], req.body.cid');
+            CNS.logger.DEBUG('setIpfsRepoRootCid: invalid `cid` body parameter [%s], req.body.cid');
             return next(new resError.BadRequestError('Missing or invalid body parameters'));
         }
 
@@ -64,7 +64,7 @@ export function setIpfsRootRepoCid(req, res, next) {
 
         if (req.userInfo.role === Credentials.roles.cnsInstance && !(typeof req.body.lastUpdatedDate === 'string'
                 && (mtLastUpdatedDate = moment(req.body.lastUpdatedDate, moment.ISO_8601, true)).isValid())) {
-            CNS.logger.DEBUG('setIpfsRootRepoCid: invalid `lastUpdatedDate` body parameter [%s]', req.body.lastUpdatedDate);
+            CNS.logger.DEBUG('setIpfsRepoRootCid: invalid `lastUpdatedDate` body parameter [%s]', req.body.lastUpdatedDate);
             return next(new resError.BadRequestError('Missing or invalid body parameter'));
         }
 
@@ -81,7 +81,7 @@ export function setIpfsRootRepoCid(req, res, next) {
             const nameEntry = CNS.nameDB.getNameEntry(ipfsRootDbNameKey);
 
             if (nameEntry && !mtLastUpdatedDate.isAfter(nameEntry.lastUpdatedDate)) {
-                CNS.logger.DEBUG('setIpfsRootRepoCid: received CID is not newer than current CID value for the designated name and shall not be updated', {
+                CNS.logger.DEBUG('setIpfsRepoRootCid: received CID is not newer than current CID value for the designated name and shall not be updated', {
                     currentNameEntry: nameEntry,
                     receivedParams: req.body
                 });
@@ -96,7 +96,7 @@ export function setIpfsRootRepoCid(req, res, next) {
                 const nameEntry = CNS.nameDB.getNameEntry(ipfsRootDbNameKey);
 
                 async.each(CNS.cnsInstance.remoteCnsConnection, ([cnsInstanceId, cnsClient], cb) => {
-                    cnsClient.setIpfsRootRepoCid(req.params.nodeIdx, nameEntry.value, nameEntry.lastUpdatedDate, (err) => {
+                    cnsClient.setIpfsRepoRootCid(req.params.nodeIdx, nameEntry.value, nameEntry.lastUpdatedDate, (err) => {
                         if (err) {
                             CNS.logger.ERROR('Error broadcasting newly set Catenis node IPFS repo root CID to remote CNS instance [%s].', cnsInstanceId, err);
                         }

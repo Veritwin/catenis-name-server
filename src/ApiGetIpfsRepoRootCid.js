@@ -34,7 +34,7 @@ import {strictParseInt} from './Util';
 //    }
 //  }
 //
-export function getIpfsRootRepoCid(req, res, next) {
+export function getIpfsRepoRootCid(req, res, next) {
     try {
         if (!this.canProcess()) {
             return next(new resError.ServiceUnavailableError('Service unavailable'));
@@ -71,7 +71,7 @@ export function getIpfsRootRepoCid(req, res, next) {
     }
 }
 
-export function checkRequestParams(req, methodName = 'getIpfsRootRepoCid') {
+export function checkRequestParams(req, methodName = 'getIpfsRepoRootCid') {
     let valid = true;
     const idx = strictParseInt(req.params.nodeIdx);
 

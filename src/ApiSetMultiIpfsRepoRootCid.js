@@ -37,7 +37,7 @@ import {strictParseInt} from './Util';
 //    "status": "success"
 //  }
 //
-export function setMultiIpfsRootRepoCid(req, res, next) {
+export function setMultiIpfsRepoRootCid(req, res, next) {
     try {
         if (!this.canProcess()) {
             return next(new resError.ServiceUnavailableError('Service unavailable'));
@@ -67,7 +67,7 @@ export function setMultiIpfsRootRepoCid(req, res, next) {
             const nameEntry = CNS.nameDB.getNameEntry(ipfsRootDbNameKey);
 
             if (nameEntry && !nodeEntry.mtLastUpdatedDate.isAfter(nameEntry.lastUpdatedDate)) {
-                CNS.logger.DEBUG('setMultiIpfsRootRepoCid: received CID is not newer than current CID value for the designated name and shall not be updated', {
+                CNS.logger.DEBUG('setMultiIpfsRepoRootCid: received CID is not newer than current CID value for the designated name and shall not be updated', {
                     currentNameEntry: nameEntry,
                     nodeIdx: nodeIdx,
                     nodeEntry: nodeEntry
@@ -107,11 +107,11 @@ function validateBodyParams(body) {
                 success = true;
             }
             else {
-                CNS.logger.DEBUG('setMultiIpfsRootRepoCid: invalid `Catenis node entry #%s` of body parameter [%s]', nodeIdx, entry);
+                CNS.logger.DEBUG('setMultiIpfsRepoRootCid: invalid `Catenis node entry #%s` of body parameter [%s]', nodeIdx, entry);
             }
         }
         else {
-            CNS.logger.DEBUG('setMultiIpfsRootRepoCid: invalid `Catenis node index` key of body parameter [%s]', nodeIdx);
+            CNS.logger.DEBUG('setMultiIpfsRepoRootCid: invalid `Catenis node index` key of body parameter [%s]', nodeIdx);
         }
 
         return success;

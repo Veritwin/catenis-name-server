@@ -40,7 +40,7 @@ import {
 //    }
 //  }
 //
-export function getAllIpfsRootRepoCids(req, res, next) {
+export function getAllIpfsRepoRootCids(req, res, next) {
     try {
         if (!this.canProcess()) {
             return next(new resError.ServiceUnavailableError('Service unavailable'));
@@ -91,7 +91,7 @@ function checkRequestParams(req) {
             req.params.updatedSince = mtDate.toDate();
         }
         else {
-            CNS.logger.DEBUG('getAllIpfsRootRepoCids: invalid `updatedSince` query parameter [%s]', req.params.updatedSince);
+            CNS.logger.DEBUG('getAllIpfsRepoRootCids: invalid `updatedSince` query parameter [%s]', req.params.updatedSince);
             valid = false;
         }
     }

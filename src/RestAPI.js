@@ -17,10 +17,10 @@ import httpSignature from 'http-signature';
 
 // References code in other (Catenis Name Server) modules
 import {CNS} from './CtnNameSvr';
-import {getIpfsRootRepoCid} from './ApiGetIpfsRepoRootCid';
-import {setIpfsRootRepoCid} from './ApiSetIpfsRepoRootCid';
-import {getAllIpfsRootRepoCids} from './ApiGetAllIpfsRepoRootCids';
-import {setMultiIpfsRootRepoCid} from './ApiSetMultiIpfsRepoRootCid';
+import {getIpfsRepoRootCid} from './ApiGetIpfsRepoRootCid';
+import {setIpfsRepoRootCid} from './ApiSetIpfsRepoRootCid';
+import {getAllIpfsRepoRootCids} from './ApiGetAllIpfsRepoRootCids';
+import {setMultiIpfsRepoRootCid} from './ApiSetMultiIpfsRepoRootCid';
 
 // Config entries
 const restApiConfig = config.get('restApi');
@@ -54,10 +54,10 @@ export function RestApi(port, host) {
     this.apiServer.on('restifyError', errorHandler);
 
     // Define API methods
-    this.apiServer.get('/ctn-node/:nodeIdx/ipfs-root', getIpfsRootRepoCid.bind(this));
-    this.apiServer.post('/ctn-node/:nodeIdx/ipfs-root', setIpfsRootRepoCid.bind(this));
-    this.apiServer.get('/ctn-node/ipfs-root', getAllIpfsRootRepoCids.bind(this));
-    this.apiServer.post('/ctn-node/ipfs-root', setMultiIpfsRootRepoCid.bind(this));
+    this.apiServer.get('/ctn-node/:nodeIdx/ipfs-root', getIpfsRepoRootCid.bind(this));
+    this.apiServer.post('/ctn-node/:nodeIdx/ipfs-root', setIpfsRepoRootCid.bind(this));
+    this.apiServer.get('/ctn-node/ipfs-root', getAllIpfsRepoRootCids.bind(this));
+    this.apiServer.post('/ctn-node/ipfs-root', setMultiIpfsRepoRootCid.bind(this));
 
     this.apiServer.listen(port, host, () => {
         CNS.logger.INFO('Catenis Name Server started at', this.apiServer.address());

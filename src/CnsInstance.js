@@ -89,7 +89,7 @@ CnsInstance.prototype.synchronize = function (callback) {
             // Retrieve all Catenis node IPFS repo root CIDs from remote CNS instances
             (cb) => {
                 async.each(this.remoteCnsConnection, ([cnsInstanceId, cnsClient], cb2) => {
-                    cnsClient.getAllIpfsRootRepoCids((err, result) => {
+                    cnsClient.getAllIpfsRepoRootCids((err, result) => {
                         if (err) {
                             CNS.logger.ERROR('Error retrieving all Catenis node IPFS repo root CIDs from remote CNS instance [%s].', cnsInstanceId, err);
                         }
@@ -137,7 +137,7 @@ CnsInstance.prototype.synchronize = function (callback) {
                 });
 
                 async.each(this.remoteCnsConnection, ([cnsInstanceId, cnsClient], cb2) => {
-                    cnsClient.setMultiIpfsRootRepoCid(ctnNodeEntries, (err) => {
+                    cnsClient.setMultiIpfsRepoRootCid(ctnNodeEntries, (err) => {
                         if (err) {
                             CNS.logger.ERROR('Error sending all locally recorded Catenis node IPFS repo root CIDs to remote CNS instance [%s].', cnsInstanceId, err);
                         }

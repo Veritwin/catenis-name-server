@@ -65,7 +65,7 @@ export function CnsClient(cnsInstanceInfo) {
 // Public CnsClient object methods
 //
 
-CnsClient.prototype.getIpfsRootRepoCid = function (ctnNodeIdx, callback) {
+CnsClient.prototype.getIpfsRepoRootCid = function (ctnNodeIdx, callback) {
     const endpointUrl = util.format('/ctn-node/%s/ipfs-root', ctnNodeIdx);
 
     if (typeof callback === 'function') {
@@ -80,7 +80,7 @@ CnsClient.prototype.getIpfsRootRepoCid = function (ctnNodeIdx, callback) {
     }
 };
 
-CnsClient.prototype.getAllIpfsRootRepoCids = function (updatedSince, callback) {
+CnsClient.prototype.getAllIpfsRepoRootCids = function (updatedSince, callback) {
     let endpointUrl = '/ctn-node/ipfs-root';
 
     if (typeof updatedSince === 'function') {
@@ -102,7 +102,7 @@ CnsClient.prototype.getAllIpfsRootRepoCids = function (updatedSince, callback) {
     }
 };
 
-CnsClient.prototype.setIpfsRootRepoCid = function (ctnNodeIdx, cid, lastUpdatedDate, callback) {
+CnsClient.prototype.setIpfsRepoRootCid = function (ctnNodeIdx, cid, lastUpdatedDate, callback) {
     if (typeof lastUpdatedDate === 'function') {
         callback = lastUpdatedDate;
         lastUpdatedDate = undefined;
@@ -136,7 +136,7 @@ CnsClient.prototype.setIpfsRootRepoCid = function (ctnNodeIdx, cid, lastUpdatedD
 //    },
 //    ...
 //  }
-CnsClient.prototype.setMultiIpfsRootRepoCid = function (ctnNodeEntries, callback) {
+CnsClient.prototype.setMultiIpfsRepoRootCid = function (ctnNodeEntries, callback) {
     const endpointUrl = '/ctn-node/ipfs-root';
 
     if (typeof callback === 'function') {
