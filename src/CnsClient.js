@@ -96,7 +96,7 @@ CnsClient.prototype.getAllIpfsRepoRootCids = function (updatedSince, callback) {
         });
     }
     else {
-        const res = this.syncMethod.get();
+        const res = this.syncMethod.get(endpointUrl);
 
         return res[2];
     }
