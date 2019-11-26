@@ -56,7 +56,7 @@ export function setIpfsRepoRootCid(req, res, next) {
         }
 
         if (typeof req.body.cid !== 'string') {
-            CNS.logger.DEBUG('setIpfsRepoRootCid: invalid `cid` body parameter [%s], req.body.cid');
+            CNS.logger.DEBUG('setIpfsRepoRootCid: invalid `cid` body parameter [%s]', req.body.cid);
             return next(new resError.BadRequestError('Missing or invalid body parameters'));
         }
 
