@@ -6,11 +6,13 @@
     objInspectionDepth: 4,
     console: {
       active: true,
-      logLevel: "INFO" // Valid options: ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL
+      logLevel: "INFO", // Valid options: ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL
+      handleExceptions: false
     },
     file: {
       active: true,
       logLevel: "DEBUG", // Valid options: ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL
+      handleExceptions: false,
       logDir: "log",
       logFilename: "cns-%DATE%.log",
       maxDays: 90
@@ -18,6 +20,7 @@
     email: {
       active: true,
       logLevel: "WARN", // Valid options: ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL
+      handleExceptions: false,
       toAddresses: "andre@blockchainofthings.com", // Can be set to a comma separated list of e-mail addresses
       fromAddress: "Catenis Name Server <noreply@blockchainofthings.com>",
       subjectFormat: "{{level}} [CNS%d] - {{msg}}"

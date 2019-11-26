@@ -93,9 +93,7 @@ Application.prototype.setDbStopped = function () {
     if (this.dbRunning) {
         this.dbRunning = false;
 
-        if (checkShutdownComplete.call(this)) {
-            finalizeShutdown.call(this);
-        }
+        checkFinalizeShutdown.call(this);
     }
 };
 
@@ -103,9 +101,7 @@ Application.prototype.setRestApiStopped = function () {
     if (this.restApiRunning) {
         this.restApiRunning = false;
 
-        if (checkShutdownComplete.call(this)) {
-            finalizeShutdown.call(this);
-        }
+        checkFinalizeShutdown.call(this);
     }
 };
 
@@ -149,21 +145,28 @@ function processShutdown() {
     else if (CNS.nameDB) {
         CNS.nameDB.shutdown()
     }
+
+    checkFinalizeShutdown.call(this);
 }
 
-function finalizeShutdown() {
-    if (!this.fatalError) {
-        process.exit(0);
+function checkFinalizeShutdown() {
+    if (checkShutdownComplete.call(this)) {
+        finalizeShutdown.call(this);
     }
 }
 
+function finalizeShutdown() {
+    process.exit(this.fatalError ? -1 : 0);
+}
+
 function shutdownWithError(err) {
+    CNS.logger.FATAL('Uncaught exception; shutting down application.', err);
     // A fatal error (uncaught exception) has occurred. Try to shutdown gracefully
     //  forcing application to exit after a while
     this.fatalError = true;
 
     setTimeout(() => {
-        process.exit(-2)
+        process.exit(-2);
     }, cfgSettings.shutdownWithErrorTimeout);
 
     processShutdown.call(this);

@@ -27,11 +27,13 @@ const cfgSettings = {
     objInspectionDepth: loggerConfig.get('objInspectionDepth'),
     console: {
         active: loggerConfig.get('console.active'),
-        logLevel: loggerConfig.get('console.logLevel')
+        logLevel: loggerConfig.get('console.logLevel'),
+        handleExceptions: loggerConfig.get('console.handleExceptions')
     },
     file: {
         active: loggerConfig.get('file.active'),
         logLevel: loggerConfig.get('file.logLevel'),
+        handleExceptions: loggerConfig.get('file.handleExceptions'),
         logDir: loggerConfig.get('file.logDir'),
         logFilename: loggerConfig.get('file.logFilename'),
         maxDays: loggerConfig.get('file.maxDays')
@@ -39,6 +41,7 @@ const cfgSettings = {
     email: {
         active: loggerConfig.get('email.active'),
         logLevel: loggerConfig.get('email.logLevel'),
+        handleExceptions: loggerConfig.get('email.handleExceptions'),
         toAddresses: loggerConfig.get('email.toAddresses'),
         fromAddress: loggerConfig.get('email.fromAddress'),
         subjectFormat: loggerConfig.get('email.subjectFormat')
@@ -151,7 +154,7 @@ function setUpTransports() {
         console: {
             level: validLogLevel(cfgSettings.console.logLevel, 'INFO'),
             silent: !cfgSettings.console.active,
-            handleExceptions: true,
+            handleExceptions: cfgSettings.console.handleExceptions,
             exceptionsLevel: 'FATAL',
             humanReadableUnhandledException: true,
             format: winston.format.combine(
@@ -164,7 +167,7 @@ function setUpTransports() {
         dailyRotateFile: {
             level: validLogLevel(cfgSettings.file.logLevel, 'DEBUG'),
             silent: !cfgSettings.file.active,
-            handleExceptions: true,
+            handleExceptions: cfgSettings.file.handleExceptions,
             exceptionsLevel: 'FATAL',
             humanReadableUnhandledException: true,
             datePattern: 'YYYY-MM-DD',
@@ -186,7 +189,7 @@ function setUpTransports() {
             from: cfgSettings.email.fromAddress,
             subject: util.format(cfgSettings.email.subjectFormat, global.CNS_INSTANCE_IDX),
             html: false,
-            handleExceptions: true,
+            handleExceptions: cfgSettings.email.handleExceptions,
             exceptionsLevel: 'FATAL',
             humanReadableUnhandledException: true,
             format: winston.format.combine(
