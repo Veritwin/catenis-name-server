@@ -70,7 +70,7 @@ ctn-node TXT {"idx":0,"pubKey":"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2q/4V67+B
 Request: `POST /ctn-node/:nodeIdx/ipfs-root`
 
 URL parameters:
-- nodeIdx: the index of the Catenis node for which the IPFS repository root CID should be set
+- nodeIdx: \[Number\] The index of the Catenis node for which the IPFS repository root CID should be set
 
 Request body: a JSON object containing the following keys:
 - `cid`: \[String\] New IPFS CID of Catenis node's IPFS repository root.
@@ -103,7 +103,7 @@ Success response body: a JSON containing the following keys:
 Request: `GET /ctn-node/:nodeIdx/ipfs-root`
 
 URL parameters:
-- `nodeIdx`: the index of the Catenis node for which the IPFS repository root CID should be retrieved.
+- `nodeIdx`: \[Number\] The index of the Catenis node for which the IPFS repository root CID should be retrieved.
 
 Success response body: a JSON containing the following keys:
 - `status`: \[String\] The value **'success'**.
