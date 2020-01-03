@@ -116,6 +116,7 @@ Success response body: a JSON containing the following keys:
 
 - `status`: \[String\] The value **'success'**.
 - `data.cid`: \[String\] The current IPFS CID of Catenis node's IPFS repository root.
+- `data.lastUpdatedDate`: \[String\] ISO-8601 formatted date and time when CID has been last updated.
 
 ### Retrieve All IPFS repository root CIDs method
 
