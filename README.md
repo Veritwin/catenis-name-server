@@ -53,6 +53,7 @@ ssh-keygen -b 2048 -t rsa -m PEM -f ctn-node0_key
 
 Catenis Name Server expects to retrieve Catenis nodes' public keys from *catenis.io*'s DNS by looking up TXT records
  associated with the ***ctn-node*** subdomain. Such TXT records should contain a JSON with the following keys:
+
 - idx: \[Integer\] The Catenis node index.
 - pubKey: \[String\] The SSH RSA public key.
 
@@ -70,9 +71,11 @@ ctn-node TXT {"idx":0,"pubKey":"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2q/4V67+B
 Request: `POST /ctn-node/:nodeIdx/ipfs-root`
 
 URL parameters:
-- nodeIdx: \[Number\] The index of the Catenis node for which the IPFS repository root CID should be set
+
+- `nodeIdx`: \[Number\] The index of the Catenis node for which the IPFS repository root CID should be set
 
 Request body: a JSON object containing the following keys:
+
 - `cid`: \[String\] New IPFS CID of Catenis node's IPFS repository root.
 - `lastUpdatedDate`: \[String\] ISO-8601 formatted date and time when CID for this Catenis node's IPFS repository root has last been recorded.
 
@@ -80,6 +83,7 @@ Request body: a JSON object containing the following keys:
  Name Server instance is calling this method.
 
 Success response body: a JSON containing the following keys:
+
 - `status`: \[String\] The value **'success'**.
 
 ### Set Multiple IPFS repository root CIDs method
@@ -87,6 +91,7 @@ Success response body: a JSON containing the following keys:
 Request: `POST /ctn-node/ipfs-root`
 
 Request body: a JSON object containing one or more of the following keys:
+
 - `<Catenis_node_index>.cid`: \[String\] New IPFS CID of Catenis node's IPFS repository root.
 - `<Catenis_node_index>.lastUpdatedDate`: \[String\] ISO-8601 formatted date and time when CID for this Catenis node's IPFS repository root has last been recorded.
 
@@ -94,6 +99,7 @@ Request body: a JSON object containing one or more of the following keys:
  root CID of which should be set.
  
 Success response body: a JSON containing the following keys:
+
 - `status`: \[String\] The value **'success'**.
 
 > **Note**: this method should only be called by another Catenis Name Server instance.
@@ -103,9 +109,11 @@ Success response body: a JSON containing the following keys:
 Request: `GET /ctn-node/:nodeIdx/ipfs-root`
 
 URL parameters:
+
 - `nodeIdx`: \[Number\] The index of the Catenis node for which the IPFS repository root CID should be retrieved.
 
 Success response body: a JSON containing the following keys:
+
 - `status`: \[String\] The value **'success'**.
 - `data.cid`: \[String\] The current IPFS CID of Catenis node's IPFS repository root.
 
@@ -114,9 +122,11 @@ Success response body: a JSON containing the following keys:
 Request: `GET /ctn-node/ipfs-root`
 
 Query string (optional) parameters:
+
 - `updatedSince`: \[String\] ISO-8601 formatted date and time used to filter Catenis IPFS repository root CIDs to be returned.
 
 Success response body: a JSON containing the following keys:
+
 - `status`: \[String\] The value **'success'**.
 - `data.<Catenis_node_index>.cid`: \[String\] CID of IPFS repository root for that Catenis node.
 - `data.<Catenis_node_index>.lastUpdatedDate`: \[String\] ISO-8601 formatted date and time when CID has been last updated.
