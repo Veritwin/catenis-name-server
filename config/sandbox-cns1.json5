@@ -1,0 +1,13 @@
+// Config file with specific settings for sandbox environment and CNS1 instance
+{
+  // Parameters pertaining to CnsInstance module
+  cnsInstance: {
+    self: {
+      pubKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC+yVPpflj5UuOKQnCPsH3qthzL54zmmeqLMKxOh+LdTHTz3dXSD5yHE9vcA1OsxnDYxllg1Xcw/GiI9ILmoBNe6OBkQTvqx1yQi6smMZGDOwBk+/naoCufMW/m5laB0+JwlzhWUjsoIkyp3415gMKmNQbqzUzkrX7utTCpAyr4Wz1GUvBWulnKt/fYVehnOSy+NutL4atNd/GFnYds2iQOC8Rhyh/R7/8wdDkhd1UUV1Kwc/eGb6Orq0IATAj9JxoV3oGlKI+zte1nHw3AkSXowNnBqgJ/Pl21+DWUdDHyUtk3LbWROdm6y9FomXOUJFIx/Cv8f/YRYaQtENMUc3EZ'
+    },
+  },
+  // Parameters pertaining to RestApi module
+  restApi: {
+    host: '10.2.1.11'  // catenis-sandbox.vlan
+  }
+}

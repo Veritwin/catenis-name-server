@@ -1,0 +1,13 @@
+// Config file with specific settings for sandbox environment and CNS2 instance
+{
+  // Parameters pertaining to CnsInstance module
+  cnsInstance: {
+    self: {
+      pubKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCxKvh0exqAbnQJOUAjWb9dXU3TYH1944onqs6w+2IdTA4IUm9Fd+ALejnHy7jLTCvu3LzC4h9KI6F1AYGIF0vlrbXjEd5FcGtyPeTJi+FiDw6y/5J7b1S6I3sTD932mjucIFT40kzr6muXpxjEeBeglDJE4Es85rLgtw7QWqs3wZ/SyYmB+95Dqyt4qirUvz+Qyh5+wjH8bmuUa48yT0rB4faY2e6aL7FvAJuxqEhU1kr+pErvvul0Lh3G2W631rRThZfPR3ehjh8y4nzLFhADw/Hda0mbfbVfxOZZqQws/D6u73Vp5k7A7Ja/t3ftO48nz7hCOqTZrPh3d3bNeTPF'
+    },
+  },
+  // Parameters pertaining to RestApi module
+  restApi: {
+    host: '10.2.1.12'  // bcottoken.vlan
+  }
+}
