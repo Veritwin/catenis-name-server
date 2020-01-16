@@ -18,6 +18,36 @@ npm i
 npm run build
 ```
 
+## Deploying the application
+
+To deploy the application, issue the command:
+
+```shell
+npm run predeploy
+```
+
+A tarball named `catenis-name-server-<version>.tgz` is written to the `dist` subdirectory.
+
+> **Note**: if deploying the application for a development environment, use the `predeploy-dev` npm script instead (i.e.,
+ `npm run predeploy-dev`). In that case, the tarball is written to the `dist/dev` subdirectory.
+
+Copy the tarball to the target host and extract its contents, renaming the top-level directory of the extracted contents
+ from `package` to `CtnNameSvr`.
+
+```shell
+tar -xzf catenis-name-server-<version>.tgz && mv package CtnNameSvr
+```
+
+Then change to the top-level directory of the extracted contents (i.e., `cd CtnNameSvr`), and issue the following commands:
+
+```shell
+nvm use
+npm i
+```
+
+> **Note**: optionally append `-g` to the npm install command (i.e., `npm i -g`) to install the application as a global
+ Node.js package. In that case, to execute the application, just issue the command `ctnnamesvr`.
+
 ## Starting the application
 
 To start the application, issue the following command:
@@ -30,7 +60,9 @@ env NODE_CONFIG_ENV='<environment>' CNS_INSTANCE_IDX=<cns_index> node build/main
  'development' (the default, if not set), 'sandbox' or 'production'.
 
 > **Note 2**: the term `<cns_index>` above should be replaced with the index (starting from 1) of this Catenis Name Server
- application instance. 
+ application instance.
+
+> **Note 3**: if the application is installed as a global Node.js package, replace `node build/main.js` with `ctnnamesvr`.
 
 ## How it works
 
@@ -97,7 +129,7 @@ Request body: a JSON object containing one or more of the following keys:
 
 > **Note**: the term `<Catenis_node_index>` should be replaced with the index of the Catenis node the IPFS repository
  root CID of which should be set.
- 
+
 Success response body: a JSON containing the following keys:
 
 - `status`: \[String\] The value **'success'**.
@@ -138,4 +170,4 @@ Success response body: a JSON containing the following keys:
 
 This project is for Blockchain of Things' internal use only.
 
-Copyright © 2019, Blockchain of Things Inc.
+Copyright © 2020, Blockchain of Things Inc.
