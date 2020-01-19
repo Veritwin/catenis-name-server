@@ -125,27 +125,35 @@ CnsInstance.prototype.synchronize = function (callback) {
                 const ctnNodeEntries = {};
                 const nameEntries =  CNS.nameDB.getAllNameEntries();
 
-                Object.keys(nameEntries).forEach((name) => {
-                    const ctnNodeId = ctnNodeIdFromIpfsRootDbNameKey(name);
+                const names = Object.keys(nameEntries);
 
-                    if (ctnNodeId) {
-                        ctnNodeEntries[ctnNodeIdxFromId(ctnNodeId)] = {
-                            cid: nameEntries[name].value,
-                            lastUpdatedDate: nameEntries[name].lastUpdatedDate.toISOString()
-                        }
-                    }
-                });
+                if (names.length > 0) {
+                    names.forEach((name) => {
+                        const ctnNodeId = ctnNodeIdFromIpfsRootDbNameKey(name);
 
-                async.each(this.remoteCnsConnection, ([cnsInstanceId, cnsClient], cb2) => {
-                    cnsClient.setMultiIpfsRepoRootCid(ctnNodeEntries, (err) => {
-                        if (err) {
-                            CNS.logger.ERROR('Error sending all locally recorded Catenis node IPFS repo root CIDs to remote CNS instance [%s].', cnsInstanceId, err);
+                        if (ctnNodeId) {
+                            ctnNodeEntries[ctnNodeIdxFromId(ctnNodeId)] = {
+                                cid: nameEntries[name].value,
+                                lastUpdatedDate: nameEntries[name].lastUpdatedDate.toISOString()
+                            }
                         }
-                        cb2();
                     });
-                }, () => {
+
+                    async.each(this.remoteCnsConnection, ([cnsInstanceId, cnsClient], cb2) => {
+                        cnsClient.setMultiIpfsRepoRootCid(ctnNodeEntries, (err) => {
+                            if (err) {
+                                CNS.logger.ERROR('Error sending all locally recorded Catenis node IPFS repo root CIDs to remote CNS instance [%s].', cnsInstanceId, err);
+                            }
+                            cb2();
+                        });
+                    }, () => {
+                        cb();
+                    });
+                }
+                else {
+                    // No name entries; just return
                     cb();
-                });
+                }
             }
         ],
         () => {
