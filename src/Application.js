@@ -132,6 +132,7 @@ function startProcessing() {
 }
 
 function processShutdown() {
+    CNS.logger.INFO('Application shutting down');
     this.runningState = Application.runningState.stopping;
 
     if (CNS.restApi) {
@@ -156,6 +157,7 @@ function checkFinalizeShutdown() {
 }
 
 function finalizeShutdown() {
+    CNS.logger.INFO('Exiting now');
     process.exit(this.fatalError ? -1 : 0);
 }
 
