@@ -8,8 +8,11 @@
 // References to external code
 //
 // Internal node modules
-//import util from 'util';
+import util from 'util';
+import fs from 'fs';
+import path from 'path';
 // Third-party node modules
+import config from 'config';
 import Future from 'fibers/future';
 
 // References code in other (Catenis Name Server) modules
@@ -21,11 +24,36 @@ import {CnsInstance} from './CnsInstance';
 import {CtnNode} from './CtnNode';
 import {RestApi} from './RestAPI';
 
+// Config entries
+const startupConfig = config.get('startup');
+
+// Configuration settings
+const cfgSettings = {
+    pidFilenameFormat: startupConfig.get('pidFilenameFormat')
+};
+
+
+// Definition of module (private) functions
+//
+
+function saveProcessId() {
+    fs.writeFile(path.join(global.CNS_ROOT_DIR, util.format(cfgSettings.pidFilenameFormat, global.CNS_INSTANCE_IDX)), process.pid.toString(), (err) => {
+        if (err) {
+            // Error recording process ID
+            CNS.logger.ERROR('Error recording process ID.', err);
+        }
+    });
+}
+
+
 // Module code
 //
 
 Future.task(function mainTask() {
     CNS.logger.TRACE('Starting application');
+    // Record ID of current process
+    saveProcessId();
+
     Application.initialize();
     NameDB.initialize();
     Credentials.initialize();

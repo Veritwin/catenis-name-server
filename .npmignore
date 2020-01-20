@@ -7,3 +7,4 @@
 /src/
 /*.tgz
 /config/*development*.json5
+ctnnamesvr*-pid
