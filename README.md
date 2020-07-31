@@ -66,7 +66,7 @@ env NODE_CONFIG_ENV='<environment>' CNS_INSTANCE_IDX=<cns_index> node build/main
 
 ## How it works
 
-Catenis Name Server provides a REST API though which Catenis nodes can reset their own IPFS repository root CID
+Catenis Name Server provides a REST API through which Catenis nodes can reset their own IPFS repository root CID
  and query for the IPFS repository root CID of other Catenis nodes.
 
 ## REST API
