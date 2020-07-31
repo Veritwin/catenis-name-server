@@ -1,0 +1,13 @@
+// Config file with specific settings for production environment and CNS3 instance
+{
+  // Parameters pertaining to CnsInstance module
+  cnsInstance: {
+    self: {
+      pubKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDiJzewOr7DqoqlKABMxQ2qdpsdr02CA7A83KXcphLKsD9jtWdf2LfG0Ry7yN/8RSgOAkXEapvxcBMdsyVOm7UQJhxSNG2LFMA/aoHIFPpJ5zdEtYVv23fhrv5/ph7XUzVSmCX1GfLC3NfW/PMR0DKcjVcMgvkWLYaclvYAV/CLbPzXj0mXPTN5fcl3MYpFeeHUrCQeuLqQfo4T+6du/238FNgqjS+qC6+ig4nZo9nzhnaNoGqhOxY03/1PVAAlWOzXUQq3IdxnQUdG6IMergoobx9VgXi6ZlwFMTUwmHkn6Ckzxa19evBD3FS0IKYRpYXQ5Ff0//ZXacMz62fVVvfF'
+    }
+  },
+  // Parameters pertaining to RestApi module
+  restApi: {
+    host: '10.1.1.13'  // ctn-ipfs-prod.vlan
+  }
+}

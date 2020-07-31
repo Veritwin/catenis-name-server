@@ -1,0 +1,13 @@
+// Config file with specific settings for production environment and CNS2 instance
+{
+  // Parameters pertaining to CnsInstance module
+  cnsInstance: {
+    self: {
+      pubKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDb4ae3z2JKPytBdyuZOtVldmZ/HUnS6gESb/hPc9QiKbcgjfSZGULtPGE6TmRE2l4We11Dmqnz7G7XSplmlVhFJyn2jrsLPreuqXJV1uJJSyF9jW1tod3/NJZklgeo9aL7t+68LuvZQlRyEkyi9nAh07RoJ7mRFMRsChe+FkjCSiih8eDoFH0mQuwDTKr7dvW9hfpNwM7maepIiphuiUHRxnosM5VcPSdr7MIaM7pPWXXNiPfwugGeORMO3eKnTZR7t375I37JLWhHMp2vuALs6Gw908BiPLnRqJ/sBD3HGvDbfmwZhIMgxPMc25qcdlrzNS8eW5/wgXvTlfiC5oFx'
+    }
+  },
+  // Parameters pertaining to RestApi module
+  restApi: {
+    host: '10.1.1.12'  // ctn-db-prod.vlan
+  }
+}

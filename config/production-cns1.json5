@@ -1,0 +1,13 @@
+// Config file with specific settings for production environment and CNS1 instance
+{
+  // Parameters pertaining to CnsInstance module
+  cnsInstance: {
+    self: {
+      pubKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDLimylCBdgbMRffZjSARl2y0+P+21IVwZF3+MOJ8yaUSwjCovWjvhAtMU5kULs9hCGSAnQ9+PtdL0F1NHvh8CeR+Fa2VPQtdmOkTlkkEScZm35v6ytML3zkno4YOWXcZyq0aR6nhCa0VvrpjSpIFYd3UrejtRkdVnmFCs6gNDePDVh1oD8XxnuLNPmV10HhciBJ8XKkLK7Sq+eHB8uTI2AUHccoys0z+2H+QV7eaJbimWN6Rs3pXRgXE9EbermcNV+RVHQvR44+AZPge3tJY70Netzw4wbDzGjqM2vd/55f1sdQt1YNSYXi7gpVGulOEr0vUdFM6SRdb5iORf8zOsj'
+    }
+  },
+  // Parameters pertaining to RestApi module
+  restApi: {
+    host: '10.1.1.11'  // catenis-prod.vlan
+  }
+}
