@@ -95,13 +95,13 @@ export function setIpfsRepoRootCid(req, res, next) {
             if (req.userInfo.role === Credentials.roles.ctnNode && CNS.cnsInstance.hasRemoteCNSInstances()) {
                 const nameEntry = CNS.nameDB.getNameEntry(ipfsRootDbNameKey);
 
-                async.each(CNS.cnsInstance.remoteCnsConnection, ([cnsInstanceId, cnsClient], cb) => {
-                    cnsClient.setIpfsRepoRootCid(req.params.nodeIdx, nameEntry.value, nameEntry.lastUpdatedDate, (err) => {
-                        if (err) {
-                            CNS.logger.ERROR('Error broadcasting newly set Catenis node IPFS repo root CID to remote CNS instance [%s].', cnsInstanceId, err);
-                        }
-                        cb();
-                    });
+                async.each(CNS.cnsInstance.remoteCnsConnection, async ([cnsInstanceId, cnsClient]) => {
+                    try {
+                        await cnsClient.setIpfsRepoRootCid(req.params.nodeIdx, nameEntry.value, nameEntry.lastUpdatedDate);
+                    }
+                    catch (err) {
+                        CNS.logger.ERROR('Error broadcasting newly set Catenis node IPFS repo root CID to remote CNS instance [%s].', cnsInstanceId, err);
+                    }
                 }, () => {});
             }
         }

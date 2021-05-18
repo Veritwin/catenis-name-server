@@ -13,7 +13,6 @@ import fs from 'fs';
 import path from 'path';
 // Third-party node modules
 import config from 'config';
-import Future from 'fibers/future';
 
 // References code in other (Catenis Name Server) modules
 import {CNS} from './CtnNameSvr';
@@ -49,7 +48,7 @@ function saveProcessId() {
 // Module code
 //
 
-Future.task(function mainTask() {
+(async function mainTask() {
     CNS.logger.TRACE('Starting application');
     // Record ID of current process
     saveProcessId();
@@ -57,7 +56,7 @@ Future.task(function mainTask() {
     Application.initialize();
     NameDB.initialize();
     Credentials.initialize();
-    CnsInstance.initialize();
-    CtnNode.initialize();
+    await CnsInstance.initialize();
+    await CtnNode.initialize();
     RestApi.initialize();
-}).detach();
+})();

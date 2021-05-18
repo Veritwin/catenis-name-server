@@ -13,10 +13,10 @@ import util from 'util';
 import config from 'config';
 import restifyClients from 'restify-clients';
 import httpSignature from 'http-signature';
-import Future from 'fibers/future';
 
 // References code in other (Catenis Name Server) modules
 import {CNS} from './CtnNameSvr';
+import {callbackToPromise} from './Util';
 
 // Config entries
 const cnsClientConfig = config.get('cnsClient');
@@ -43,65 +43,29 @@ export function CnsClient(cnsInstanceInfo) {
         signRequest: httpSignRequest,
         url: assembleUrl(cnsInstanceInfo)
     });
-    this.futGet = Future.wrap(this.client.get, true);
-    this.futPost = Future.wrap(this.client.post, true);
-    this.syncMethod = {
-        get: (...args) => {
-            return this.futGet.apply(this.client, args).wait();
-        },
-        post: (...args) => {
-            return this.futPost.apply(this.client, args).wait();
-        }
-    }
+    this.promGet = callbackToPromise(this.client.get, this.client);
+    this.promPost = callbackToPromise(this.client.post, this.client);
 }
 
 
 // Public CnsClient object methods
 //
 
-CnsClient.prototype.getIpfsRepoRootCid = function (ctnNodeIdx, callback) {
-    const endpointUrl = util.format('/ctn-node/%s/ipfs-root', ctnNodeIdx);
-
-    if (typeof callback === 'function') {
-        this.client.get(endpointUrl, (err, req, res, retData) => {
-            callback(err, retData);
-        });
-    }
-    else {
-        const res = this.syncMethod.get(endpointUrl);
-
-        return res[2];
-    }
+CnsClient.prototype.getIpfsRepoRootCid = async function (ctnNodeIdx) {
+    return (await this.promGet(`/ctn-node/${ctnNodeIdx}/ipfs-root`))[2];
 };
 
-CnsClient.prototype.getAllIpfsRepoRootCids = function (updatedSince, callback) {
+CnsClient.prototype.getAllIpfsRepoRootCids = async function (updatedSince) {
     let endpointUrl = '/ctn-node/ipfs-root';
 
-    if (typeof updatedSince === 'function') {
-        callback = updatedSince;
-    }
-    else if (updatedSince instanceof Date) {
+    if (updatedSince instanceof Date) {
         endpointUrl += '?updatedSince=' + updatedSince.toISOString();
     }
 
-    if (typeof callback === 'function') {
-        this.client.get(endpointUrl, (err, req, res, retData) => {
-            callback(err, retData);
-        });
-    }
-    else {
-        const res = this.syncMethod.get(endpointUrl);
-
-        return res[2];
-    }
+    return (await this.promGet(endpointUrl))[2];
 };
 
-CnsClient.prototype.setIpfsRepoRootCid = function (ctnNodeIdx, cid, lastUpdatedDate, callback) {
-    if (typeof lastUpdatedDate === 'function') {
-        callback = lastUpdatedDate;
-        lastUpdatedDate = undefined;
-    }
-
+CnsClient.prototype.setIpfsRepoRootCid = async function (ctnNodeIdx, cid, lastUpdatedDate) {
     const data = {
         cid: cid
     };
@@ -110,16 +74,7 @@ CnsClient.prototype.setIpfsRepoRootCid = function (ctnNodeIdx, cid, lastUpdatedD
         data.lastUpdatedDate = lastUpdatedDate;
     }
 
-    const endpointUrl = util.format('/ctn-node/%s/ipfs-root', ctnNodeIdx);
-
-    if (typeof callback === 'function') {
-        this.client.post(endpointUrl, data, (err, req, res, retData) => {
-            callback(err);
-        });
-    }
-    else {
-        const res = this.syncMethod.post(endpointUrl, data);
-    }
+    await this.promPost(`/ctn-node/${ctnNodeIdx}/ipfs-root`, data);
 };
 
 // Arguments:
@@ -130,17 +85,8 @@ CnsClient.prototype.setIpfsRepoRootCid = function (ctnNodeIdx, cid, lastUpdatedD
 //    },
 //    ...
 //  }
-CnsClient.prototype.setMultiIpfsRepoRootCid = function (ctnNodeEntries, callback) {
-    const endpointUrl = '/ctn-node/ipfs-root';
-
-    if (typeof callback === 'function') {
-        this.client.post(endpointUrl, ctnNodeEntries, (err, req, res, retData) => {
-            callback(err);
-        });
-    }
-    else {
-        const res = this.syncMethod.post(endpointUrl, ctnNodeEntries);
-    }
+CnsClient.prototype.setMultiIpfsRepoRootCid = async function (ctnNodeEntries) {
+    await this.promPost('/ctn-node/ipfs-root', ctnNodeEntries);
 };
 
 

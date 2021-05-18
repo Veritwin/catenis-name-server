@@ -14,7 +14,6 @@ import config from 'config';
 import _und from 'underscore';
 import async from 'async';
 import moment from 'moment';
-import Future from 'fibers/future';
 
 // References code in other (Catenis Name Server) modules
 import {CNS} from './CtnNameSvr';
@@ -24,7 +23,7 @@ import {
     ctnNodeIdxFromId,
     makeIpfsRootDbNameKey
 } from './CtnNode';
-import {syncDnsResolveTxt} from './Util';
+import {promDnsResolveTxt} from './Util';
 import {cfgSettings as restApiCfgSettings} from './RestAPI';
 
 // Config entries
@@ -56,7 +55,7 @@ export function CnsInstance() {
     this.remoteCnsConnection = new Map();
     this.selfId = undefined;
 
-    retrieveCNSInstances.call(this);
+    this.promiseInitRetrieval = retrieveCNSInstances.call(this);
 
     setInterval(intervalRetrieveCNSInstances.bind(this), cfgSettings.refreshInterval);
 
@@ -78,6 +77,15 @@ export function CnsInstance() {
 // Public CnsInstance object methods
 //
 
+CnsInstance.prototype.initialRetrieval = async function () {
+    try {
+        await this.promiseInitRetrieval;
+    }
+    catch (err) {
+        CNS.logger.ERROR('Error during initial retrieval of Catenis Name Server instances.', err);
+    }
+}
+
 CnsInstance.prototype.hasRemoteCNSInstances = function () {
     return this.remoteCnsInstanceIds.size > 0;
 };
@@ -88,34 +96,37 @@ CnsInstance.prototype.synchronize = function (callback) {
         async.series([
             // Retrieve all Catenis node IPFS repo root CIDs from remote CNS instances
             (cb) => {
-                async.each(this.remoteCnsConnection, ([cnsInstanceId, cnsClient], cb2) => {
-                    cnsClient.getAllIpfsRepoRootCids((err, result) => {
-                        if (err) {
-                            CNS.logger.ERROR('Error retrieving all Catenis node IPFS repo root CIDs from remote CNS instance [%s].', cnsInstanceId, err);
-                        }
-                        else if (result.data) {
-                            Object.keys(result.data).forEach((key) => {
-                                const nodeEntry = result.data[key];
-                                nodeEntry.mtLastUpdatedDate = moment(nodeEntry.lastUpdatedDate);
-                                const nodeIdx = parseInt(key);
-                                const ipfsRootDbNameKey = makeIpfsRootDbNameKey(nodeIdx);
-                                const nameEntry = CNS.nameDB.getNameEntry(ipfsRootDbNameKey);
+                async.each(this.remoteCnsConnection, async ([cnsInstanceId, cnsClient]) => {
+                    let result;
 
-                                if (nameEntry && !nodeEntry.mtLastUpdatedDate.isAfter(nameEntry.lastUpdatedDate)) {
-                                    CNS.logger.DEBUG('CnsInstance.synchronize: received CID is not newer than current CID value for the designated name and shall not be updated', {
-                                        currentNameEntry: nameEntry,
-                                        nodeIdx: nodeIdx,
-                                        nodeEntry: nodeEntry
-                                    });
-                                }
-                                else {
-                                    CNS.nameDB.setNameEntry(ipfsRootDbNameKey, nodeEntry.cid, nodeEntry.mtLastUpdatedDate.toDate());
-                                }
-                            });
-                        }
+                    try {
+                        result = await cnsClient.getAllIpfsRepoRootCids();
+                    }
+                    catch (err) {
+                        CNS.logger.ERROR('Error retrieving all Catenis node IPFS repo root CIDs from remote CNS instance [%s].', cnsInstanceId, err);
+                        return;
+                    }
 
-                        cb2();
-                    });
+                    if (result.data) {
+                        Object.keys(result.data).forEach((key) => {
+                            const nodeEntry = result.data[key];
+                            nodeEntry.mtLastUpdatedDate = moment(nodeEntry.lastUpdatedDate);
+                            const nodeIdx = parseInt(key);
+                            const ipfsRootDbNameKey = makeIpfsRootDbNameKey(nodeIdx);
+                            const nameEntry = CNS.nameDB.getNameEntry(ipfsRootDbNameKey);
+
+                            if (nameEntry && !nodeEntry.mtLastUpdatedDate.isAfter(nameEntry.lastUpdatedDate)) {
+                                CNS.logger.DEBUG('CnsInstance.synchronize: received CID is not newer than current CID value for the designated name and shall not be updated', {
+                                    currentNameEntry: nameEntry,
+                                    nodeIdx: nodeIdx,
+                                    nodeEntry: nodeEntry
+                                });
+                            }
+                            else {
+                                CNS.nameDB.setNameEntry(ipfsRootDbNameKey, nodeEntry.cid, nodeEntry.mtLastUpdatedDate.toDate());
+                            }
+                        });
+                    }
                 }, () => {
                     cb();
                 });
@@ -139,13 +150,13 @@ CnsInstance.prototype.synchronize = function (callback) {
                         }
                     });
 
-                    async.each(this.remoteCnsConnection, ([cnsInstanceId, cnsClient], cb2) => {
-                        cnsClient.setMultiIpfsRepoRootCid(ctnNodeEntries, (err) => {
-                            if (err) {
-                                CNS.logger.ERROR('Error sending all locally recorded Catenis node IPFS repo root CIDs to remote CNS instance [%s].', cnsInstanceId, err);
-                            }
-                            cb2();
-                        });
+                    async.each(this.remoteCnsConnection, async ([cnsInstanceId, cnsClient]) => {
+                        try {
+                            await cnsClient.setMultiIpfsRepoRootCid(ctnNodeEntries);
+                        }
+                        catch (err) {
+                            CNS.logger.ERROR('Error sending all locally recorded Catenis node IPFS repo root CIDs to remote CNS instance [%s].', cnsInstanceId, err);
+                        }
                     }, () => {
                         cb();
                     });
@@ -170,16 +181,19 @@ CnsInstance.prototype.synchronize = function (callback) {
 //
 
 function intervalRetrieveCNSInstances() {
-    Future.task(retrieveCNSInstances.bind(this)).detach();
+    retrieveCNSInstances.call(this)
+    .catch(err => {
+        CNS.logger.ERROR('Error executing process to retrieve Catenis Name Server instances.', err);
+    });
 }
 
-function retrieveCNSInstances() {
+async function retrieveCNSInstances() {
     CNS.logger.TRACE('Retrieving Catenis Name Server instances...');
 
     let records;
 
     try {
-        records = syncDnsResolveTxt(cfgSettings.dnsRecName + '.' + CNS.app.domainRoot);
+        records = await promDnsResolveTxt(cfgSettings.dnsRecName + '.' + CNS.app.domainRoot);
     }
     catch (err) {
         CNS.logger.ERROR('Error retrieving Catenis Name Server instances.', err);
@@ -274,8 +288,10 @@ function retrieveCNSInstances() {
 // CnsInstance function class (public) methods
 //
 
-CnsInstance.initialize = function () {
+CnsInstance.initialize = async function () {
     CNS.cnsInstance = new CnsInstance();
+
+    await CNS.cnsInstance.initialRetrieval();
 };
 
 

@@ -11,11 +11,10 @@
 import util from 'util';
 // Third-party node modules
 import config from 'config';
-import Future from 'fibers/future';
 
 // References code in other (Catenis Name Server) modules
 import {CNS} from './CtnNameSvr';
-import {syncDnsResolveTxt} from './Util';
+import {promDnsResolveTxt} from './Util';
 
 // Config entries
 const ctnNodeConfig = config.get('ctnNode');
@@ -35,7 +34,7 @@ const cfgSettings = {
 export function CtnNode() {
     this.ctnNodeIdInfo = new Map();
 
-    retrieveCatenisNodes.call(this);
+    this.promiseInitRetrieval = retrieveCatenisNodes.call(this);
 
     setInterval(intervalRetrieveCatenisNodes.bind(this), cfgSettings.refreshInterval);
 }
@@ -44,8 +43,14 @@ export function CtnNode() {
 // Public CtnNode object methods
 //
 
-/*CtnNode.prototype.pub_func = function () {
-};*/
+CtnNode.prototype.initialRetrieval = async function () {
+    try {
+        await this.promiseInitRetrieval;
+    }
+    catch (err) {
+        CNS.logger.ERROR('Error during initial retrieval of Catenis nodes.', err);
+    }
+}
 
 
 // Module functions used to simulate private CtnNode object methods
@@ -55,15 +60,18 @@ export function CtnNode() {
 //
 
 function intervalRetrieveCatenisNodes() {
-    Future.task(retrieveCatenisNodes.bind(this)).detach();
+    retrieveCatenisNodes.call(this)
+    .catch(err => {
+        CNS.logger.ERROR('Error executing process to retrieve Catenis nodes.', err);
+    });
 }
 
-function retrieveCatenisNodes() {
+async function retrieveCatenisNodes() {
     CNS.logger.TRACE('Retrieving Catenis nodes...');
     let records;
 
     try {
-        records = syncDnsResolveTxt(cfgSettings.dnsRecName + '.' + CNS.app.domainRoot);
+        records = await promDnsResolveTxt(cfgSettings.dnsRecName + '.' + CNS.app.domainRoot);
     }
     catch (err) {
         CNS.logger.ERROR('Error retrieving Catenis nodes.', err);
@@ -112,8 +120,10 @@ function retrieveCatenisNodes() {
 // CtnNode function class (public) methods
 //
 
-CtnNode.initialize = function () {
+CtnNode.initialize = async function () {
     CNS.ctnNode = new CtnNode();
+
+    await CNS.ctnNode.initialRetrieval();
 };
 
 

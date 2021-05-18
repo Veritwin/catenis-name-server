@@ -10,7 +10,6 @@
 // Internal node modules
 import dns from 'dns';
 // Third-party node modules
-import Future from 'fibers/future';
 
 // References code in other (Catenis Name Server) modules
 
@@ -21,11 +20,25 @@ export function strictParseInt(val) {
     return Number.isInteger(val) ? val : (typeof val === 'string' && /^\d+$/.test(val) ? parseInt(val, 10) : NaN);
 }
 
-export const syncDnsResolveTxt = (() => {
-    const futFunc = Future.wrap(dns.resolveTxt);
+export function callbackToPromise(func, context) {
+    return function (...args) {
+        let callback;
+        const result = new Promise((resolve, reject) => {
+            callback = (err, ...res) => {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(res.length === 1 ? res[0] : res);
+                }
+            }
+        });
 
-    return function syncDnsResolveTxt() {
-        return futFunc.apply(this, arguments).wait();
-    }
-})();
+        args.push(callback);
+        func.apply(context, args);
 
+        return result;
+    };
+}
+
+export const promDnsResolveTxt = callbackToPromise(dns.resolveTxt);
