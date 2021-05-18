@@ -15,7 +15,7 @@ import moment from 'moment';
 
 // References code in other (Catenis Name Server) modules
 import {CNS} from './CtnNameSvr';
-import { makeIpfsRootDbNameKey, makeCtnNodeId } from './CtnNode';
+import {makeIpfsRootDbNameKey} from './CtnNode';
 import {Credentials} from './Credentials';
 import {strictParseInt} from './Util';
 

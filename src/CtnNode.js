@@ -8,7 +8,6 @@
 // References to external code
 //
 // Internal node modules
-import dns from 'dns';
 import util from 'util';
 // Third-party node modules
 import config from 'config';
