@@ -10,11 +10,12 @@
 // Internal node modules
 import path from 'path';
 import util from 'util';
+import url from 'url';
 // Third-party node modules
 
 // References code in other (Catenis Name Server) modules
-import {strictParseInt} from './Util';
-import {fixIt as fixMoment} from './FixMoment';
+import {strictParseInt} from './Util.js';
+import {fixIt as fixMoment} from './FixMoment.js';
 
 
 // Definition of module (private) functions
@@ -50,6 +51,7 @@ else {
 }
 
 // Set application root directory
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 global.CNS_ROOT_DIR = path.join(__dirname, '..');
 
 // Set config directory

@@ -13,7 +13,7 @@
 import config from 'config';
 
 // References code in other (Catenis Name Server) modules
-import {CNS} from './CtnNameSvr';
+import {CNS} from './CtnNameSvr.js';
 
 // Config entries
 const appConfig = config.get('application');

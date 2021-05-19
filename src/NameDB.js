@@ -16,10 +16,10 @@ import config from 'config';
 import Loki from 'lokijs';
 
 // References code in other (Catenis Name Server) modules
-import {CNS} from './CtnNameSvr';
+import {CNS} from './CtnNameSvr.js';
 import {
     DbNotReadyError
-} from './CustomErrors';
+} from './CustomErrors.js';
 
 // Config entries
 const nameDbConfig = config.get('nameDB');

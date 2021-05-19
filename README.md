@@ -40,16 +40,6 @@ The following is an example of such TXT record:
 cns TXT {"idx":1,"pubKey":"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGVwjPH8Ru5+CSiaXOu50EgB0VQdwzvEvnHpvI+aLMAWFW7tvDjAFctlkUv6Herq7jo0tragdl7munN4PM7cN/HzEI16srEbzFpiovYlBsFciEeFtMjcezO61NPnc5M8sdQj1WKccG9ubMrtcvRIX3MxBSbU2ngYGxqG/65i9NTBmgnrr/3nrXK0N5QiA+wH4QePfZRe+9m6iy3RAPFftUI44yZxw1w7/kxzipiu47NTeaGG+0Oa+3ujjsxNrkzhabuU4wlStaw55/Ynmy8507wTTY2ZPxGXy6K15DE3jkrgumE7UBAgJG5RI712J0VGAbOBEb2jaXDEpH7RIVLX8p","port":8188,"secure":false}
 ```
 
-## Building the application
-
-To build the application, issue the following commands:
-
-```shell
-nvm use
-npm i
-npm run build
-```
-
 ## Deploying the application
 
 To deploy the application, issue the command:

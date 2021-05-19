@@ -14,11 +14,11 @@ import resError from 'restify-errors';
 import moment from 'moment';
 
 // References code in other (Catenis Name Server) modules
-import {CNS} from './CtnNameSvr';
+import {CNS} from './CtnNameSvr.js';
 import {
     ctnNodeIdFromIpfsRootDbNameKey,
     ctnNodeIdxFromId
-} from './CtnNode';
+} from './CtnNode.js';
 
 // Definition of module (private) functions
 //

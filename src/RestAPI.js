@@ -16,11 +16,11 @@ import resError from 'restify-errors';
 import httpSignature from 'http-signature';
 
 // References code in other (Catenis Name Server) modules
-import {CNS} from './CtnNameSvr';
-import {getIpfsRepoRootCid} from './ApiGetIpfsRepoRootCid';
-import {setIpfsRepoRootCid} from './ApiSetIpfsRepoRootCid';
-import {getAllIpfsRepoRootCids} from './ApiGetAllIpfsRepoRootCids';
-import {setMultiIpfsRepoRootCid} from './ApiSetMultiIpfsRepoRootCid';
+import {CNS} from './CtnNameSvr.js';
+import {getIpfsRepoRootCid} from './ApiGetIpfsRepoRootCid.js';
+import {setIpfsRepoRootCid} from './ApiSetIpfsRepoRootCid.js';
+import {getAllIpfsRepoRootCids} from './ApiGetAllIpfsRepoRootCids.js';
+import {setMultiIpfsRepoRootCid} from './ApiSetMultiIpfsRepoRootCid.js';
 
 // Config entries
 const restApiConfig = config.get('restApi');

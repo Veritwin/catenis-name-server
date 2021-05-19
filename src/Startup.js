@@ -15,13 +15,13 @@ import path from 'path';
 import config from 'config';
 
 // References code in other (Catenis Name Server) modules
-import {CNS} from './CtnNameSvr';
-import {Application} from './Application';
-import {NameDB} from './NameDB';
-import {Credentials} from './Credentials';
-import {CnsInstance} from './CnsInstance';
-import {CtnNode} from './CtnNode';
-import {RestApi} from './RestAPI';
+import {CNS} from './CtnNameSvr.js';
+import {Application} from './Application.js';
+import {NameDB} from './NameDB.js';
+import {Credentials} from './Credentials.js';
+import {CnsInstance} from './CnsInstance.js';
+import {CtnNode} from './CtnNode.js';
+import {RestApi} from './RestAPI.js';
 
 // Config entries
 const startupConfig = config.get('startup');

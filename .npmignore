@@ -5,9 +5,7 @@
 /db/
 /*_key
 /*_key.pub
-/src/
 /*.tgz
-.babelrc
 /config/*development*.json5
 /config/*sandbox*.json5
 ctnnamesvr*-pid

@@ -15,10 +15,10 @@ import moment from 'moment';
 import async from 'async';
 
 // References code in other (Catenis Name Server) modules
-import {CNS} from './CtnNameSvr';
-import {checkRequestParams} from './ApiGetIpfsRepoRootCid';
-import { makeIpfsRootDbNameKey, makeCtnNodeId } from './CtnNode';
-import {Credentials} from './Credentials';
+import {CNS} from './CtnNameSvr.js';
+import {checkRequestParams} from './ApiGetIpfsRepoRootCid.js';
+import { makeIpfsRootDbNameKey, makeCtnNodeId } from './CtnNode.js';
+import {Credentials} from './Credentials.js';
 
 // Definition of module (private) functions
 //

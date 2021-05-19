@@ -15,8 +15,8 @@ import 'winston-mail';
 import { LEVEL } from 'triple-beam';
 
 // References code in other (Catenis Name Server) modules
-import { CNS } from './CtnNameSvr';
-import { cfgSettings as emailCfgSettings } from './ConfigEmail';
+import { CNS } from './CtnNameSvr.js';
+import { cfgSettings as emailCfgSettings } from './ConfigEmail.js';
 
 // Config entries
 const loggerConfig = config.get('logger');

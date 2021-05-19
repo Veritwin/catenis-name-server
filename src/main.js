@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import './ConfigEnv';
-import './ConfigEmail';
-import './Logger';
-import './Startup';
+import './ConfigEnv.js';
+import './ConfigEmail.js';
+import './Logger.js';
+import './Startup.js';

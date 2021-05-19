@@ -16,15 +16,15 @@ import async from 'async';
 import moment from 'moment';
 
 // References code in other (Catenis Name Server) modules
-import {CNS} from './CtnNameSvr';
-import {CnsClient} from './CnsClient';
+import {CNS} from './CtnNameSvr.js';
+import {CnsClient} from './CnsClient.js';
 import {
     ctnNodeIdFromIpfsRootDbNameKey,
     ctnNodeIdxFromId,
     makeIpfsRootDbNameKey
-} from './CtnNode';
-import {promDnsResolveTxt} from './Util';
-import {cfgSettings as restApiCfgSettings} from './RestAPI';
+} from './CtnNode.js';
+import {promDnsResolveTxt} from './Util.js';
+import {cfgSettings as restApiCfgSettings} from './RestAPI.js';
 
 // Config entries
 const cnsInstanceConfig = config.get('cnsInstance');

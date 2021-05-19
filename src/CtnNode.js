@@ -13,8 +13,8 @@ import util from 'util';
 import config from 'config';
 
 // References code in other (Catenis Name Server) modules
-import {CNS} from './CtnNameSvr';
-import {promDnsResolveTxt} from './Util';
+import {CNS} from './CtnNameSvr.js';
+import {promDnsResolveTxt} from './Util.js';
 
 // Config entries
 const ctnNodeConfig = config.get('ctnNode');
