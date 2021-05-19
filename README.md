@@ -52,7 +52,7 @@ A tarball named `catenis-name-server-<version>.tgz` is written to the `dist` sub
 
 > **Note**: if deploying the application for a non-production environment (i.e., *sandbox* or *development*), use the
  appropriate alternative npm script (i.e., `predeploy-sandbox` or `predeploy-dev`). In that case, the tarball is written
- to a corresponding subdirectory (i.e., `div/sandbox` or `dist/dev`).
+ to a corresponding subdirectory (i.e., `dist/sandbox` or `dist/dev`).
 
 Copy the tarball to the target host and extract its contents, renaming the top-level directory of the extracted contents
  from `package` to `CtnNameSvr`.
@@ -73,10 +73,10 @@ npm i
 
 ## Starting the application
 
-To start the application, issue the following command:
+To start the application, issue the following command from the application's top-level directory (`CtnNameSvr`):
 
 ```shell
-env NODE_CONFIG_ENV='<environment>' CNS_INSTANCE_IDX=<cns_index> node build/main.js
+nvm use && env NODE_CONFIG_ENV='<environment>' CNS_INSTANCE_IDX=<cns_index> node .
 ```
 
 > **Note 1**: the term `<environment>` should be replaced with the appropriate deployment environment; either
@@ -85,7 +85,7 @@ env NODE_CONFIG_ENV='<environment>' CNS_INSTANCE_IDX=<cns_index> node build/main
 > **Note 2**: the term `<cns_index>` above should be replaced with the index (starting from 1) of this Catenis Name Server
  application instance.
 
-> **Note 3**: if the application is installed as a global Node.js package, replace `node build/main.js` with `ctnnamesvr`.
+> **Note 3**: if the application is installed as a global Node.js package, replace `node .` with `ctnnamesvr`.
 
 ## How it works
 
