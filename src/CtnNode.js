@@ -43,15 +43,6 @@ export function CtnNode() {
 // Public CtnNode object methods
 //
 
-CtnNode.prototype.initialRetrieval = async function () {
-    try {
-        await this.promiseInitRetrieval;
-    }
-    catch (err) {
-        CNS.logger.ERROR('Error during initial retrieval of Catenis nodes.', err);
-    }
-}
-
 
 // Module functions used to simulate private CtnNode object methods
 //  NOTE: these functions need to be bound to a CtnNode object reference (this) before
@@ -123,7 +114,7 @@ async function retrieveCatenisNodes() {
 CtnNode.initialize = async function () {
     CNS.ctnNode = new CtnNode();
 
-    await CNS.ctnNode.initialRetrieval();
+    await CNS.ctnNode.promiseInitRetrieval;
 };
 
 

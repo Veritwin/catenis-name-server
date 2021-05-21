@@ -77,15 +77,6 @@ export function CnsInstance() {
 // Public CnsInstance object methods
 //
 
-CnsInstance.prototype.initialRetrieval = async function () {
-    try {
-        await this.promiseInitRetrieval;
-    }
-    catch (err) {
-        CNS.logger.ERROR('Error during initial retrieval of Catenis Name Server instances.', err);
-    }
-}
-
 CnsInstance.prototype.hasRemoteCNSInstances = function () {
     return this.remoteCnsInstanceIds.size > 0;
 };
@@ -291,7 +282,7 @@ async function retrieveCNSInstances() {
 CnsInstance.initialize = async function () {
     CNS.cnsInstance = new CnsInstance();
 
-    await CNS.cnsInstance.initialRetrieval();
+    await CNS.cnsInstance.promiseInitRetrieval;
 };
 
 
