@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.3] - 2021-05-25
+
+### Fixes
+- Correct initialization of CnsInstance and CtnNode modules.
+
 ## [1.0.2] - 2021-05-19
 
 ### Changes
