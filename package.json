@@ -42,6 +42,6 @@
     "winston-mail": "^2.0.0"
   },
   "repository": {
-    "directory": "git@bitbucket.org:blockchainofthings/catenis-name-server.git"
+    "directory": "git@github.com:blockchainofthings/catenis-name-server.git"
   }
 }
