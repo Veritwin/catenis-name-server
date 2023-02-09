@@ -1,6 +1,6 @@
 {
   "name": "catenis-name-server",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Implementation of Catenis Name Service",
   "type": "module",
   "main": "src/main.js",

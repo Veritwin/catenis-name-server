@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.5] -2023-02-09
+
+### Fixes
+- Fix issue starting the server when no other (remote) CNS instances are available.
+
 ## [1.0.4] - 2023-01-26
 
 ### Changes
