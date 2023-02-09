@@ -162,6 +162,9 @@ CnsInstance.prototype.synchronize = function (callback) {
             async.setImmediate(() => callback());
         });
     }
+    else {
+        async.setImmediate(callback);
+    }
 };
 
 
