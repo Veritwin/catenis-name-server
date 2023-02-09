@@ -118,9 +118,7 @@ CnsInstance.prototype.synchronize = function (callback) {
                             }
                         });
                     }
-                }, () => {
-                    cb();
-                });
+                }, cb);
             },
             // Send all locally recorded Catenis node IPFS repo root CIDs to remote CNS instances
             (cb) => {
@@ -148,19 +146,14 @@ CnsInstance.prototype.synchronize = function (callback) {
                         catch (err) {
                             CNS.logger.ERROR('Error sending all locally recorded Catenis node IPFS repo root CIDs to remote CNS instance [%s].', cnsInstanceId, err);
                         }
-                    }, () => {
-                        cb();
-                    });
+                    }, cb);
                 }
                 else {
                     // No name entries; just return
                     cb();
                 }
             }
-        ],
-        () => {
-            async.setImmediate(() => callback());
-        });
+        ], callback);
     }
     else {
         async.setImmediate(callback);

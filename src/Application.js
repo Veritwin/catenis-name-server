@@ -141,7 +141,7 @@ function processShutdown() {
 
         // Wait for some time to make sure that all processing is finalized gracefully
         //  before shutting down the name Database
-        setTimeout(() => CNS.nameDB.shutdown(), cfgSettings.shutdownTimeout);
+        setTimeout(CNS.nameDB.shutdown, cfgSettings.shutdownTimeout);
     }
     else if (CNS.nameDB) {
         CNS.nameDB.shutdown()
